@@ -8,13 +8,13 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Egecan Cogulu - Personal / Professional Website"
+title                    : "Ege's Personal Website"
 title_separator          : "-"
 name                     : &name "Egecan Cogulu"
 description              : &description "Personal / Professional Website"
-url                      : https://academicpages.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+url                      : https://egecancogulu.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "academicpages/academicpages.github.io"
+repository               : "EgecanCogulu/egecancogulu.github.io"
 
 # Site Author - The following control what appear as part of the author content on the side bar.
 #               If a field is blank the icon and link will not appear, otherwise it will be shown.
@@ -22,19 +22,19 @@ repository               : "academicpages/academicpages.github.io"
 author:
   # Biographic information
   avatar           : "profile.png"
-  name             : "Ege Cogulu"
+  name             : "Egecan Cogulu"
   pronouns         : # example: "she/her"  
   bio              : "Data Scientist"
   location         : "SF Bay Area"
-  employer         : "Happy Returns, "
+  employer         : "Happy Returns"
   uri              : # URL
   email            : "egecancogulu@gmail.com" 
 
   # Academic websites
   arxiv            : # URL - Update with the correct link to your profile
-  googlescholar    : "https://scholar.google.com/citations?user=PS_CX0AAAAAJ"
+  googlescholar    : "https://scholar.google.com/citations?user=YzKgnmAAAAAJ&hl=en"
   impactstory      : # URL
-  orcid            : "http://orcid.org/yourorcidurl"
+  orcid            : "https://orcid.org/0000-0001-5568-3476"
 
   researchgate     : # URL
 
@@ -42,7 +42,7 @@ author:
   bitbucket        : # Username - Update with your username on the site
   codepen          : # Username
   dribbble         : # Username
-  github           : "https://github.com/EgecanCogulu"
+  github           : "EgecanCogulu"
   kaggle           : # Username  
   stackoverflow    : # User number or user number and name (i.e., use "1" or "1/jeff-atwood")    
 
@@ -56,7 +56,7 @@ author:
   keybase          : # Username
   instagram        : # Username
   lastfm           : # Username
-  linkedin         : https://www.linkedin.com/in/egecan-cogulu/ # Username
+  linkedin         : "egecan-cogulu" # Username
   mastodon         : # URL
   medium           : # URL
   pinterest        : # Username
