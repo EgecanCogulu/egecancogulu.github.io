@@ -14,9 +14,9 @@ Hi, my name is Ege.
 
 HTML
 =====
-If the PDF below does not load, you can <u><a href="https://egecancogulu.github.io/files/files/AFM_test.html">download it here.</a></u>
+If the PDF below does not load, you can <u><a href="https://egecancogulu.github.io/files/AFM_test.html">download it here.</a></u>
 <br/>
 
 <div style="height: 90vh;">
-    <iframe src="https://egecancogulu.github.io/files/files/AFM_test.html" width="100%" height="100%" style="border: none;"></iframe>
+    <iframe src="https://egecancogulu.github.io/files/AFM_test.html" width="100%" height="100%" style="border: none;"></iframe>
 </div>
