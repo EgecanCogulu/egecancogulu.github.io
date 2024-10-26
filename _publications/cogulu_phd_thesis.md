@@ -1,4 +1,4 @@
----
+<!-- ---
 title: "Thesis"
 collection: publications
 category: manuscripts
@@ -11,4 +11,4 @@ paperurl: 'https://www.proquest.com/openview/1d3dda68f151bd819649e1dae376b87f/1?
 
 ---
 
-Test
+Test -->
