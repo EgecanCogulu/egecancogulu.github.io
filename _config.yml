@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Ege Cogulu"
+title                    : "Egecan Cogulu"
 title_separator          : "-"
 name                     : &name "Egecan Cogulu"
 description              : &description "Personal Website"
