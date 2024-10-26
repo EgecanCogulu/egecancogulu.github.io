@@ -6,12 +6,12 @@ redirect_from:
   - /about/
   - /about.html
 ---
-Hi, my name is Ege.
+Hi, my name is Egecan Cogulu or Ege for short.  I am actively working on building this site.
 
  About
 ======
  I am a Data Scientist with a background in Physics and Engineering. 
- (I am actively working on building this site.)
+
 
 Antiferromagnetic Spin Dynamics
 =====
