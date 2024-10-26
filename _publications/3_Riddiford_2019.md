@@ -8,7 +8,6 @@ date: 2019-09-16
 venue: 'Applied Physical Letters (APL)'
 slidesurl: 'http://egecancogulu.github.io/files/3.Riddiford2019.pdf'
 paperurl: 'https://pubs.aip.org/aip/apl/article/115/12/122401/986260/Efficient-spin-current-generation-in-low-damping2'
-citation: "Appl. Phys. Lett. 16 September 2019; 115 (12): 122401"
 ---
 
 Low-damping magnetic insulators are essential for pure spin current-based electronics as they can generate and transfer spin currents without associated charge currents. Nanometer-thick epitaxial thin films of low-damping magnetic insulators are particularly important in order
