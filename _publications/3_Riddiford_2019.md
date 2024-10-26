@@ -5,7 +5,7 @@ category: manuscripts
 permalink: /publications/3_Riddiford_2019
 excerpt: 'Low-damping MgAlFeO(MAFO) magnetic insulator thin films are promising for spin current-based spintronics, showing efficient spin current injection and high spin-wave frequencies, making them versatile alternatives to YIG for spin-transfer applications.'
 date: 2019-09-16
-venue: 'IEEE Transactions on Electron Devices'
+venue: 'Applied Physical Letters (APL)'
 slidesurl: 'http://egecancogulu.github.io/files/3.Riddiford2019.pdf'
 paperurl: 'https://pubs.aip.org/aip/apl/article/115/12/122401/986260/Efficient-spin-current-generation-in-low-damping2'
 citation: "Riddiford et al.; Efficient spin current generation in low-damping Mg(Al, Fe)2O4 thin films. Appl. Phys. Lett. 16 September 2019; 115 (12): 122401"
