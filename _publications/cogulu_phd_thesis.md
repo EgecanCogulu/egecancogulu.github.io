@@ -1,7 +1,7 @@
 ---
 title: "PhD Thesis"
 collection: publications
-category: thesis
+category: manuscripts
 permalink: /publication/cogulu_phd_thesis
 excerpt: "This thesis experimentally investigates the electrical detection and control of Néel order in insulating antiferromagnetic thin films, like α-Fe₂O₃ and NiO, aiming to advance antiferromagnetic materials' application in high-speed spintronic devices."
 date: 2022-05-17
