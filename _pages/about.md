@@ -11,12 +11,12 @@ Hi, my name is Ege.
  About
 ======
  I am a Data Scientist with a background in Physics and Engineering. 
+ (I am actively working on building this site.)
 
-HTML
+Antiferromagnetic Spin Dynamics
 =====
-If the PDF below does not load, you can <u><a href="https://egecancogulu.github.io/files/AFM_test.html">download it here.</a></u>
+Interactive HTML Graph Example
 <br/>
-
 <div style="height: 90vh;">
     <iframe src="https://egecancogulu.github.io/files/AFM_test.html" width="100%" height="100%" style="border: none;"></iframe>
 </div>
