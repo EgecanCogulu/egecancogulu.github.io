@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "About"
+title                    : "Ege Cogulu"
 title_separator          : "-"
 name                     : &name "Egecan Cogulu"
 description              : &description "Personal Website"
@@ -22,7 +22,7 @@ repository               : "EgecanCogulu/egecancogulu.github.io"
 author:
   # Biographic information
   avatar           : "profile_pic.jpg"
-  name             : "Egecan Cogulu"
+  name             : "Ege(can) Cogulu"
   pronouns         : # example: "she/her"  
   bio              : "Data Scientist | Ph.D. in Physics"
   location         : "SF Bay Area"
