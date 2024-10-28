@@ -1,6 +1,6 @@
 ---
 title: "Ferromagnetic Dynamics"
-excerpt: "Solutions to LLGS Equation for a FM<br/><img src='/images/CASE_I.png'>"
+excerpt: "Solutions to LLGS Equation for a FM"
 collection: portfolio
 ---
 
