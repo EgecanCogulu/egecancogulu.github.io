@@ -10,6 +10,7 @@ slidesurl: 'http://egecancogulu.github.io/files/cogulu_phd_thesis.pdf'
 paperurl: 'https://www.proquest.com/openview/1d3dda68f151bd819649e1dae376b87f/1?pq-origsite=gscholar&cbl=18750&diss=y'
 
 ---
+### Abstract 
 
 This thesis focuses on experimental investigations of detection and control of Néel order in insulating antiferromagnetic thin films, specifically 𝛼-Fe2O3 and NiO. Antiferromagnetic materials have been getting increasing attention from the spintronics community because of their interesting properties and for potential applications in information processing. Some of these properties are zero net magnetization, low magnetic susceptibility, and very fast intrinsic spin
 dynamics with frequencies in the THz regime. Detecting and manipulating antiferromagnetic order electrically and reliably is a crucial milestone for realizing antiferromagnetic devices, but also an experimentally challenging one. Magnetic switching reported in antiferromagnetic thin filmsthusfaris overwhelmingly based on electronic transport methods, which provide only spatially averaged information on antiferromagnetic states. In addition, the resulting magnetoresistance from switching is usually less than 1% and can be masked by other effects due to the large current densities (e.g. electromigration, heating, thermal stresses, etc.). So, it is not always possible to identify the source of the observed magnetoresistance signal. 
