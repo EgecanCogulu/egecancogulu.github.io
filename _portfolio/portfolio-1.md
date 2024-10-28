@@ -1,6 +1,6 @@
 ---
-title: "Portfolio item number 1"
-excerpt: "Short description of portfolio item number 1<br/><img src='/images/500x300.png'>"
+title: "Ferromagnetic Dynamics"
+excerpt: "Solutions to LLGS Equation for a FM<br/><img src='/images/CASE_I.png'>"
 collection: portfolio
 ---
 
