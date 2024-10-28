@@ -3,7 +3,7 @@ title: "Precessional spin-torque dynamics in biaxial antiferromagnets"
 collection: publications
 category: manuscripts
 permalink: /publications/5_Partha_2021
-excerpt: 'tba'
+excerpt: 'This study describes the controlled precession of Néel order in biaxial antiferromagnets under spin torque, showing that in-plane and normal spin polarization components can stabilize the motion, with hysteretic behavior and threshold spin currents linked to anisotropy; it also proposes a device setup for tuning terahertz nano-oscillations.'
 date: 2021-01-29
 venue: 'Physical Review B'
 slidesurl: 'http://egecancogulu.github.io/files/5.Partha2021.pdf'
