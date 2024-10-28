@@ -3,7 +3,7 @@ title: "Current Induced Spin Dynamics in Antiferromagnets"
 collection: publications
 category: thesis
 permalink: /publications/cogulu_phd_thesis
-excerpt: 'This thesis experimentally investigates the electrical detection and control of Néel order in insulating antiferromagnetic thin films, like FeO and NiO, aiming to advance antiferromagnetic materials application in high-speed spintronic devices.'
+excerpt: 'My thesis experimentally investigates the electrical detection and control of Néel order in insulating antiferromagnetic thin films, like 𝛼−Fe₂O₃ and NiO, aiming to advance antiferromagnetic materials application in high-speed spintronic devices.'
 date: 2022-05-17
 venue: 'ProQuest Dissertations Theses Global'
 slidesurl: 'http://egecancogulu.github.io/files/cogulu_phd_thesis.pdf'

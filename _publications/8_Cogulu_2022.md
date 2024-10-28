@@ -1,14 +1,15 @@
 ---
-title: "*Quantifying Spin-Orbit Torques in Antiferromagnet/Heavy Metal Heterostructures"
+title: "Quantifying Spin-Orbit Torques in Antiferromagnet/Heavy Metal Heterostructures"
 collection: publications
 category: firstauthor
-permalink: /publications/3_Riddiford_2019
-excerpt: 'tba'
-date: 2022-09-16
-venue: 'Applied Physical Letters (APL)'
+permalink: /publications/8_Cogulu_2022
+excerpt: 'This study characterizes spin-orbit torques (SOTs) at antiferromagnet-heavy-metal (AFM-HM) interfaces, revealing that fieldlike torques dominate over dampinglike ones in 𝛼−Fe₂O₃/Pt heterostructures, with implications for spin current manipulation in insulating AFMs.'
+date: 2022-07-17
+venue: 'Physical Review Letters'
 slidesurl: 'http://egecancogulu.github.io/files/8.Cogulu2022.pdf'
-paperurl: 'https://pubs.aip.org/aip/apl/article/115/12/122401/986260/Efficient-spin-current-generation-in-low-damping2'
+paperurl: 'https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.128.247204'
 
 ---
 ### Abstract 
-Low-damping magnetic insulators are essential for pure spin current-based electronics as they can generate and transfer spin currents without associated charge currents. Nanometer-thick epitaxial thin films of low-damping magnetic insulators are particularly important in order to control and switch the magnetization via spin transfer torques. We have recently developed films of the ferromagnetic insulator Mg(Al,Fe)<sub>2</sub>O<sub>4</sub> (MAFO) with a low Gilbert damping parameter (0.001). In contrast to Y<sub>2</sub>OFe<sub>5</sub>O<sub>12</sub> (YIG), MAFO films can be grown on a variety of substrates and have significant in-plane magnetic anisotropy, leading to higher spin-wave frequencies. Here, we demonstrate efficient spin current injection from MAFO into adjacent Pt and b-W layers by ferromagnetic resonance (FMR) broadening and inverse spin Hall effect measurements. Angular  dependent magnetoresistance (ADMR) measurements indicate that the proximity effect magnetoresistance is small compared to the spin Hall magnetoresistance associated with spin pumping. FMR and ADMR measurements indicate that MAFO/Pt interfaces have a spin-mixing conductance of 2 x 10<sub>14</sub>  m<sup>2</sup> , comparable to that of YIG/Pt. These measurements also show that the spin transport can be described by Dyakonov-Perel spin relaxation combined with an extrinsic spin Hall effect (from skew scattering). These results demonstrate the promise of spinel ferrites for spin current-based spintronics.
+
+The effect of spin currents on the magnetic order of insulating antiferromagnets (AFMs) is of fundamental interest and can enable new applications. Toward this goal, characterizing the spin-orbit torques (SOTs) associated with AFM–heavy-metal (HM) interfaces is important. Here we report the full angular dependence of the harmonic Hall voltages in a predominantly easy-plane AFM, epitaxial 𝑐-axis oriented 𝛼−Fe₂O₃ films, with an interface to Pt. By modeling the harmonic Hall signals together with the 𝛼−Fe₂O₃ magnetic parameters, we determine the amplitudes of fieldlike and dampinglike SOTs. Out-of-plane field scans are shown to be essential to determining the dampinglike component of the torques. In contrast to ferromagnetic–heavy-metal heterostructures, our results demonstrate that the fieldlike torques are significantly larger than the dampinglike torques, which we correlate with the presence of a large imaginary component of the interface spin-mixing conductance. Our work demonstrates a direct way of characterizing SOTs in AFM-HM heterostructures.
