@@ -22,7 +22,7 @@ When you are initially working your website, it is very useful to be able to pre
     
     On most Linux distribution and [Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/about) the command is:
     ```bash
-    sudo apt install ruby-dev ruby-bundler nodejs
+    sudo apt install ruby-dev ruby-bundler nod  ejs
     ```
     On MacOS the commands are:
     ```bash
