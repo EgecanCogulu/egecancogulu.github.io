@@ -23,7 +23,7 @@ Below is an Ising model simulation that will be featured in a future blog post.
 <br>
 (Press play to restart!)
 <iframe
-  src="https://egecancogulu.github.io/images/ising2.html"
+  src="https://egecancogulu.github.io/images/ising.html"
   width="100%"
   height="600px"
   frameborder="0"
