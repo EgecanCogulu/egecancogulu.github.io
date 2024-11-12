@@ -19,13 +19,13 @@ My graduate research was on current induced spin dynamics in antiferromagnetic m
 
  I am planning to post stuff that I find insteresting in [posts](/year-archive/) section.
 
-![ising_model](/images/ising.html)
-
-<div align="center">
-  <img src="/images/ising.html" height="100" />
-
-</div>
-
-<iframe src="egecancogulu.github.io/images/ising.html" 
-        width="100%" 
-        height="300px"></iframe>
+Below is an Ising model simulation that will be featured in a future blog post.
+<br>
+(Press play to restart!)
+<iframe
+  src="https://egecancogulu.github.io/images/ising2.html"
+  width="100%"
+  height="1000px"
+  frameborder="0"
+  style="border: none; width: 100%; height: 100vh; overflow: hidden;"
+></iframe>
