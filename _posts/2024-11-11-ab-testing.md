@@ -186,7 +186,7 @@ In all cases, bootsrapped calculation and theory match at least 3<sup>rd</sup> d
 The sampled data must be unbiased.
 Bootstrapping assumes the observed data sufficiently represents the underlying population.
 ## Conclusion
-Bootstrapping is a my go-to tool for estimating uncertainty and testing hypotheses, particularly when I am presenting to non-technical stakeholdders. Through this method, you can:
+Bootstrapping is my go-to tool for estimating uncertainty and testing hypotheses, particularly when I am presenting to non-technical stakeholders. Through this method, you can:
 
 * Understand (and visualize) the range of plausible values for your metrics.
 * Test hypotheses with fewer assumptions, leveraging the power of resampling.
