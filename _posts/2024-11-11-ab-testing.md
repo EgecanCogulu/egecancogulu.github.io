@@ -91,7 +91,6 @@ for i in range(50_000):
         
 p_value = (np.array(diff_means) <= 0).mean()
 print(f"P-value: {p_value:.5f}")
-        
 ```
 Output:
 ```
@@ -100,9 +99,9 @@ P-value: 0.13634
 
 <p align="center">
   <img src="/images/hypothesis-testing.png" alt="A histogram showing bootstrapped confidence intervals">
-  <em>Fig 3: A histogram of the differences of bootstrapped samples.Proportion of values below zero to represent the p-value.</em>
+  <em>Fig 3: A histogram of the differences of bootstrapped samples. Proportion of values below zero to represent the p-value.</em>
 </p>
-A p-value of 0.136 is significantly higher than the traditionally chosen 0.05 limit. That means under the null hypothesis (e.g. if there is no difference between experiment and control), there is 13.6% chance of seeing a result like this just due to random chance. Therefore we **can't**. reject the null hypothesis!
+A p-value of 0.136 is significantly higher than the traditionally chosen 0.05 limit. That means under the null hypothesis (e.g. if there is no difference between experiment and control), there is 13.6% chance of seeing a result like this just due to random chance. Therefore we **can't** reject the null hypothesis!
 ## Comparing Bootstrap Results to Theoretical Values
 Bootstrapping is particularly valuable when:
 
@@ -173,27 +172,19 @@ z_stat = (exp_mean - ctrl_mean) / se_combined
 p_value =  (1 - sp.stats.norm.cdf(abs(z_stat)))
 
 # Output results
-print(f"Control Group Mean (ctrl_mean): {ctrl_mean:.4f}")
-print(f"Experiment Group Mean (exp_mean): {exp_mean:.4f}")
-print(f"Pooled Proportion (pooled_proportion): {pooled_proportion:.4f}")
-print(f"Combined Standard Error (se_combined): {se_combined:.4f}")
 print(f"Z-Statistic: {z_stat:.4f}")
 print(f"P-Value: {p_value:.4f}")
 ``` 
 Output:
 ```
-Control Group Mean (ctrl_mean): 0.25000
-Experiment Group Mean (exp_mean): 0.25500
-Pooled Proportion (pooled_proportion): 0.25045
-Combined Standard Error (se_combined): 0.00454
 Z-Statistic: 1.10030
 P-Value: 0.13560
 ```
 In all cases, bootsrapped calculation and theory match at least 3<sup>rd</sup> digits after decimal!
-## Key Considerations for Bootstrapping:
+### Key Considerations for Bootstrapping:
 
 The sampled data must be unbiased.
-Bootstrapping assumes the observed data sufficiently represents the underlying population. (Although this is necessary for any statistical method.)
+Bootstrapping assumes the observed data sufficiently represents the underlying population.
 ## Conclusion
 Bootstrapping is a my go-to tool for estimating uncertainty and testing hypotheses, particularly when I am presenting to non-technical stakeholdders. Through this method, you can:
 

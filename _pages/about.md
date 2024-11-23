@@ -9,6 +9,9 @@ redirect_from:
 Hi, my name is Ege.  I am currently working on building this site. 
 In the meantime, you can check out my [resume](/cv/) and [publications](/publications/).
 
+If you're curious about using bootstrapping for confidence intervals and A/B testing, check out [my blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/).
+
+
  About
 ======
  I am a Data Scientist with a background in Physics and Engineering.
