@@ -40,7 +40,7 @@ And if we use the gyromagnetic ratio relation to substitute angular momentum $$\
 
 This equation is known as Landau-Lifshitz equation and describes the uniform precession of a magnetic moment around the applied field with the Larmor frequency $$\omega = \gamma \mu_{0} H$$. This is analogous of precession of a spinning top inside a uniform gravitational field without any frictional loss.
 
-Dissipation
+### Dissipation
 
 In reality, every physical system loses energy over time due to dissipational forces. To capture this Landau and Lifshitz proposed a damping term proportional to $$\mathbf{m} \times (\mathbf{m} \times \mathbf{H}_{\textrm{eff}})$$, which is always perpendicular to the orbit, so that precession slowly dies out. Later, Gilbert modified the damping term into $$\alpha m \times \dfrac{d\mathbf{m}}{dt}$$ and the resulting equation is now known as Landau-Lifshitz-Gilbert (LLG) equation:
 
@@ -63,7 +63,7 @@ An interesting aspect of the Gilbert damping term is that it is proportional to 
 ![image](/images/llgs.png)
 
 
-Spin Torques
+### Spin (Transfer) Torques
 
 In 1996, Slonczewski and Berger independently realized that the effects of Gilbert damping can be countered by spin-transfer torques and lead to magnetization switching or stable oscillations in spin valves. They expanded LLG the model to account for the spin-transfer torque term. This equation is now known as Landau-Liftshitz-Gilbert-Slonczewski (LLGS) equation:
 
