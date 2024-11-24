@@ -184,7 +184,7 @@ In all cases, bootsrapped calculation and theory match at least 3<sup>rd</sup> d
 ### Key Considerations for Bootstrapping:
 
 The sampled data must be unbiased.
-Bootstrapping assumes the observed data sufficiently represents the underlying population.
+Bootstrapping assumes the observed data represents the population well.
 ## Conclusion
 Bootstrapping is my go-to tool for estimating uncertainty and testing hypotheses, particularly when I am presenting to non-technical stakeholders. Through this method, you can:
 
