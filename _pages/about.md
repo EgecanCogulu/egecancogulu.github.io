@@ -10,9 +10,11 @@ Hi, my name is Ege, welcome to my personal website. You can check out my [resume
 
 If you're curious about using bootstrapping for calculating confidence intervals and for evaluating A/B tests, check out [my blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/)
 
+<div style="display: flex; justify-content: center; align-items: center;height: 22vh;">
 <a href="https://egecancogulu.github.io/posts/2024/11/ab-testing/">
-  <img src="https://egecancogulu.github.io/images/ab_test_thumbnail.png" alt="Bootstrapping in A/B Tests" style="width:300px; height:auto; border-radius:8px;">
+  <img src="https://egecancogulu.github.io/images/ab_test_thumbnail.png" alt="Bootstrapping in A/B Tests" style="width:400px; height:auto; border-radius:8px;">
 </a>
+</div>
 
  About me
 ======
