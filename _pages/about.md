@@ -8,8 +8,11 @@ redirect_from:
 ---
 Hi, my name is Ege, welcome to my personal website. You can check out my [resume](/cv/) and [publications](/publications/).
 
-If you're curious about using bootstrapping for calculating confidence intervals and for evaluating A/B tests, check out [my first blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/)
+If you're curious about using bootstrapping for calculating confidence intervals and for evaluating A/B tests, check out [my blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/)
 
+<a href="https://egecancogulu.github.io/posts/2024/11/ab-testing/">
+  <img src="https://egecancogulu.github.io/images/ab_test_thumbnail.png" alt="Bootstrapping in A/B Tests" style="width:300px; height:auto; border-radius:8px;">
+</a>
 
  About me
 ======
