@@ -8,7 +8,7 @@ tags:
   - Hypothesis Testing
 ---
 
-When running experiments, like A/B tests, understanding uncertainty and statistical significance is extremely crucial. This post explores how the bootstrapping method helps calculate confidence intervals and p-values in an A/B test scenario.
+When running experiments, like A/B tests, understanding uncertainty and statistical significance is extremely crucial. This post explores how the bootstrapping method helps to calculate confidence intervals and p-values in an A/B test scenario.
 
 The two main questions that we are trying to answer are:
 1. How do we calculate the confidence interval for the metric we are measuring?
@@ -99,7 +99,7 @@ P-value: 0.13634
 
 <p align="center">
   <img src="/images/hypothesis-testing.png" alt="A histogram showing bootstrapped confidence intervals">
-  <em>Fig 3: A histogram of the differences of bootstrapped samples. Proportion of values below zero to represent the p-value.</em>
+  <em>Fig 3: A histogram of the differences of bootstrapped samples. Proportion of values below zero represents the p-value.</em>
 </p>
 A p-value of 0.136 is significantly higher than the traditionally chosen 0.05 limit. That means under the null hypothesis (e.g. if there is no difference between experiment and control), there is 13.6% chance of seeing a result like this just due to random chance. Therefore we **can't** reject the null hypothesis!
 ## Comparing Bootstrap Results to Theoretical Values
