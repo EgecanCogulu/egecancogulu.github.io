@@ -8,21 +8,21 @@ redirect_from:
 ---
 Hi, my name is Ege, welcome to my personal website. You can check out my [resume](/cv/) and [publications](/publications/).
 
-If you're curious about using bootstrapping for calculating confidence intervals and for evaluating A/B tests, check out [my blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/)
+If you're curious about using bootstrapping for calculating confidence intervals and for evaluating A/B tests, check out [my first blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/)
 
-<div style="display: flex; justify-content: center; align-items: center;height: 24vh;">
+<!-- <div style="display: flex; justify-content: center; align-items: center;height: 24vh;">
 <a href="https://egecancogulu.github.io/posts/2024/11/ab-testing/">
   <img src="https://egecancogulu.github.io/images/ab_test_thumbnail.png" alt="Bootstrapping in A/B Tests" style="width:400px; height:auto; border-radius:0px;">
 </a>
-</div>
+</div> -->
 
  About me
 ======
  I am a Data Scientist with a background in Physics and Engineering.
 
-Currently, I am working as a Senior Data Scientist for [Happy Returns, a UPS Company.]( https://happyreturns.com/ "Happy Returns, a UPS Company.") I analyze and interpret complex data sets, while enabling our team to make data-driven decisions and innovate returns solutions. My focus areas are predictive modeling,  A/B testing and machine learning.
+Currently, I am working as a Data Scientist at [Meta](https://www.meta.com/about/ "Meta"). I help advertisers understand the true return of investment of their ad campaigns. Before that I was working as a Senior Data Scientist for [Happy Returns, a UPS Company.]( https://happyreturns.com/ "Happy Returns, a UPS Company.") I analyze and interpret complex data sets, while enabling the team to make data-driven decisions. My focus areas are predictive modeling,  A/B testing, causal inference and machine learning.
 
-My graduate research focused on current-induced spin dynamics in antiferromagnetic materials. I worked with large data sets resulting from spectroscopy and electron microscopy experiments, supervised by [Andy Kent](https://as.nyu.edu/faculty/andrew-d-kent.html "Andy Kent") in [Center for Quantum Phenomena, New York University.](https://as.nyu.edu/departments/physics/research/center-for-quantum-phenomena.html "CQP")
+My graduate research was focused on current-induced spin dynamics in antiferromagnetic materials. I worked with large data sets resulting from spectroscopy and electron microscopy experiments, supervised by [Andy Kent](https://as.nyu.edu/faculty/andrew-d-kent.html "Andy Kent") in [Center for Quantum Phenomena, New York University.](https://as.nyu.edu/departments/physics/research/center-for-quantum-phenomena.html "CQP")
 
  I post stuff that I find interesting in [posts](/year-archive/) section.
 
