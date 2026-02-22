@@ -8,7 +8,7 @@ redirect_from:
 ---
 Hi, my name is Ege, welcome to my personal website. You can check out my [resume](/cv/) and [publications](/publications/).
 
-If you're curious about using bootstrapping for calculating confidence intervals and for evaluating A/B tests, check out [my first blog post!](https://egecancogulu.github.io/posts/2024/11/ab-testing/)
+I write short [blog posts](/year-archive/) about topics in statistics and data science that I find interesting. These cover practical applications like A/B testing, probability, and causal inference.
 
 <!-- <div style="display: flex; justify-content: center; align-items: center;height: 24vh;">
 <a href="https://egecancogulu.github.io/posts/2024/11/ab-testing/">
@@ -18,7 +18,7 @@ If you're curious about using bootstrapping for calculating confidence intervals
 
  About me
 ======
- I am a Data Scientist with a background in Physics and Engineering.
+ I am a Data Scientist with a background in experimental condensed matter physics.
 
 Currently, I am working as a Data Scientist at [Meta](https://www.meta.com/about/ "Meta"). I help advertisers understand the true return of investment of their ad campaigns. Before that I was working as a Senior Data Scientist for [Happy Returns, a UPS Company.]( https://happyreturns.com/ "Happy Returns, a UPS Company.") I analyze and interpret complex data sets, while enabling the team to make data-driven decisions. My focus areas are predictive modeling,  A/B testing, causal inference and machine learning.
 
