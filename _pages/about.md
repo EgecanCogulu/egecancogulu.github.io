@@ -18,7 +18,7 @@ I write short [blog posts](/year-archive/) about topics in statistics and data s
 
  About me
 ======
- I am a Data Scientist with a background in experimental condensed matter physics.
+ I am a Data Scientist with a background in experimental condensed matter physics. 
 
 Currently, I am working as a Data Scientist at [Meta](https://www.meta.com/about/ "Meta"). I help advertisers understand the true return of investment of their ad campaigns. Before that I was working as a Senior Data Scientist for [Happy Returns, a UPS Company.]( https://happyreturns.com/ "Happy Returns, a UPS Company.") I analyze and interpret complex data sets, while enabling the team to make data-driven decisions. My focus areas are predictive modeling,  A/B testing, causal inference and machine learning.
 
