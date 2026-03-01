@@ -2,12 +2,13 @@
 title: 'The Counter-Intuitiveness of "Random"'
 date: 2024-11-24
 permalink: /posts/2024/11/randomness/
+published: false
 tags:
   - Probability
   - Randomness
 ---
 
-What does "random" actually look like? Most people have a confident answer to this — scattered, spread out, no obvious patterns. But true randomness looks nothing like that. It clusters, repeats, and surprises in ways our intuitions don't expect.
+What does "random" actually look like? Most people have a confident answer: scattered, spread out, no obvious patterns. But true randomness looks nothing like that. It clusters, repeats, and surprises in ways our intuitions don't expect.
 
 This post walks through three examples.
 
@@ -19,7 +20,7 @@ The right panel shows 250 points drawn from a true uniform distribution.
 
 <iframe src="https://egecancogulu.github.io/images/random_points.html" style="width: 100%; height: 530px; border: none;"></iframe>
 
-The difference is immediate. True random points cluster. There are regions with several overlapping dots and large empty patches right next to them. This isn't a quirk of the random number generator — it is exactly what randomness produces.
+The difference is immediate. True random points cluster. There are regions with several overlapping dots and large empty patches right next to them. This is exactly what randomness produces.
 
 The intuition failure here is subtle. When people try to make something "look random," they avoid clumps. But avoiding clumps is itself a constraint. True randomness has no such preference for uniformity.
 
@@ -27,9 +28,9 @@ The point density in each panel is color-coded: darker means more crowded. The h
 
 ## Coin Flips Don't Alternate
 
-Imagine flipping a fair coin 100 times and writing down what you think the results look like. Most people write something that alternates fairly often — THTHTHTHHTHTH — with maybe an occasional run of two or three. Long runs of five, six, or seven feel too unlikely to write down.
+Imagine flipping a fair coin 100 times and writing down what you think the results look like. Most people write something that alternates fairly often (THTHTHTHHTHTH) with maybe an occasional run of two or three. Long runs of five, six, or seven feel too unlikely to write down.
 
-They aren't. In 100 fair coin flips, the expected longest run of heads (or tails) is around 6 or 7. Seeing seven heads in a row somewhere in 100 flips is more likely than not.
+In 100 fair coin flips, the expected longest run of heads (or tails) is around 6 or 7. Seeing seven heads in a row somewhere in 100 flips is more likely than not.
 
 The visualization below compares a truly random sequence of 100 flips against a human-like sequence (generated with a 70% chance of switching at each step, mimicking how people fake randomness). Toggle between them and look at the run length distributions on the right.
 
@@ -37,15 +38,15 @@ The visualization below compares a truly random sequence of 100 flips against a 
 
 The human-like sequence has almost no runs longer than 3. The true random sequence has several, including one of length 7. The distribution chart makes this concrete: the human version is heavily skewed toward short runs, while the true random version spreads across lengths the way probability theory predicts.
 
-This is the gambler's fallacy. After seeing four heads in a row, the next flip feels like it should be tails. It isn't. Each flip is independent, and the coin has no memory.
+This is the gambler's fallacy. After seeing four heads in a row, the next flip feels like it should be tails. Each flip is independent, and the coin has no memory of what came before.
 
 ## Shuffle That Feels Random Isn't
 
-Spotify's original shuffle was truly random. Users complained it was broken. Songs by the same artist kept playing back to back, and the same song sometimes came up twice in an hour. These were not bugs — they were the expected output of a uniform random process.
+Spotify's original shuffle was truly random. Users complained it was broken. Songs by the same artist kept playing back to back, and the same song sometimes came up twice in an hour. All expected outputs of a uniform random process.
 
 Spotify eventually replaced it with a smarter algorithm that spaces artists out deliberately. The result is less random but feels more random because it matches expectations.
 
-The visualization below shows 40 songs from 5 artists. Both rows contain the same songs — one in a true random order, the other in a smart shuffle.
+The visualization below shows 40 songs from 5 artists. Both rows contain the same songs: one in a true random order, the other in a smart shuffle.
 
 <iframe src="https://egecancogulu.github.io/images/playlist_shuffle.html" style="width: 100%; height: 340px; border: none;"></iframe>
 
