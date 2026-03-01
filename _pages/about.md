@@ -6,27 +6,29 @@ redirect_from:
   - /about/
   - /about.html
 ---
-Hi, my name is Ege, welcome to my personal website. You can check out my [resume](/cv/) and [publications](/publications/).
+Hi, my name is Ege. I'm a Data Scientist based in San Francisco. You can check out my [resume](/cv/) and [publications](/publications/), or browse my [blog posts](/year-archive/) on statistics, data science, and physics.
 
-I write short [blog posts](/year-archive/) about topics in statistics and data science that I find interesting. These cover practical applications like A/B testing, probability, and causal inference.
+## About me
 
-<!-- <div style="display: flex; justify-content: center; align-items: center;height: 24vh;">
-<a href="https://egecancogulu.github.io/posts/2024/11/ab-testing/">
-  <img src="https://egecancogulu.github.io/images/ab_test_thumbnail.png" alt="Bootstrapping in A/B Tests" style="width:400px; height:auto; border-radius:0px;">
-</a>
-</div> -->
+I am a Senior Data Scientist with a background in experimental physics, specializing in causal inference, experimentation, and statistical modeling at scale.
 
- About me
-======
- I am a Data Scientist with a background in experimental condensed matter physics. 
+**Meta** *(Jun 2025 – Present)*
 
-Currently, I am working as a Data Scientist at [Meta](https://www.meta.com/about/ "Meta"). I help advertisers understand the true return of investment of their ad campaigns. Before that I was working as a Senior Data Scientist for [Happy Returns, a UPS Company.]( https://happyreturns.com/ "Happy Returns, a UPS Company.") I analyze and interpret complex data sets, while enabling the team to make data-driven decisions. My focus areas are predictive modeling,  A/B testing, causal inference and machine learning.
+I work on ads measurement at Meta, where I help advertisers understand the true return on investment of their ad campaigns. My work focuses on building and strengthening attribution strategy by integrating experimentation with causal inference methods (difference-in-differences, propensity score matching, synthetic controls, and incrementality frameworks) to better reflect how the advertising industry measures impact. I also lead cross-functional efforts to standardize fair-credit rules for external measurement partners across methodologies like multi-touch attribution (MTA), media mix modeling (MMM), and geo-based lift studies (GeoLift). This work has had a 0.1% incremental revenue impact, translating to roughly $160M per year.
 
-My graduate research was focused on current-induced spin dynamics in antiferromagnetic materials. I worked with large data sets resulting from spectroscopy and electron microscopy experiments, supervised by [Andy Kent](https://as.nyu.edu/faculty/andrew-d-kent.html "Andy Kent") in [Center for Quantum Phenomena, New York University.](https://as.nyu.edu/departments/physics/research/center-for-quantum-phenomena.html "CQP")
+**Happy Returns (PayPal / UPS)** *(May 2022 – May 2025)*
 
- I post stuff that I find interesting in [posts](/year-archive/) section.
+Before Meta, I spent three years at Happy Returns, a retail returns platform that was acquired by PayPal and later UPS during my time there. I started out building predictive models to forecast shipping supply needs across thousands of locations and creating dashboards that teams across the company ended up relying on. Over time my work shifted toward experimentation and optimization: I led multi-round A/B tests on customer-facing features and built time-series forecasting pipelines to optimize shipping logistics across 10,000 centers. It was a good environment to develop a broad set of skills quickly, and I got to see the company through its acquisition by UPS while my role kept growing.
 
-Below is an Ising model simulation that will be featured in a future blog post.
+**Graduate Research, NYU** *(Sep 2016 – May 2022)*
+
+My PhD research at the [Center for Quantum Phenomena](https://as.nyu.edu/departments/physics/research/center-for-quantum-phenomena.html "CQP") at New York University focused on current-induced spin dynamics in antiferromagnetic materials, supervised by [Andy Kent](https://as.nyu.edu/faculty/andrew-d-kent.html "Andy Kent"). I worked with hundreds of gigabytes of image data from electron microscopy experiments and developed analytical and numerical models to extract signal from high-dimensional voltage data as a function of temperature, current, and magnetic field.
+
+---
+
+I write about topics I find interesting in the [posts](/year-archive/) section, mostly statistics, probability, and the occasional physics simulation.
+
+Below is an interactive Ising model simulation from a [recent blog post](/posts/2026/02/ising-model/).
 <br>
 (Press play to restart!)
 <iframe

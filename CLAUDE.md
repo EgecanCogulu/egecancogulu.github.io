@@ -160,6 +160,12 @@ Three posts (randomness, round-robin, ising-model) are currently untracked in gi
 
 ---
 
+## Writing Style
+
+- Never use em dashes (--) in any content
+- Avoid other common AI writing tells: avoid words like "delve", "crucial", "leverage", "seamlessly", "it's worth noting", "in conclusion", etc.
+- Write in plain, direct prose
+
 ## Content Themes
 
 Blog posts follow two main themes:
