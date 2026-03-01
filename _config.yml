@@ -8,9 +8,9 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Egecan Cogulu"
+title                    : "Ege Cogulu"
 title_separator          : "-"
-name                     : &name "Egecan Cogulu"
+name                     : &name "Ege Cogulu"
 description              : &description "Personal Website"
 url                      : https://egecancogulu.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
