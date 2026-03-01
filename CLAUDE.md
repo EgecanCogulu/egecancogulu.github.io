@@ -10,23 +10,20 @@ Live site: https://egecancogulu.github.io
 
 ### Local server
 ```bash
-bundle exec jekyll serve --livereload
+/c/Ruby33-x64/bin/bundle exec jekyll serve --livereload
 ```
 Visit http://localhost:4000. The `--livereload` flag auto-refreshes on file changes. Note: `_config.yml` changes require a server restart.
 
-### Alternative (hawkins gem for livereload)
-```bash
-bundle exec jekyll liveserve
-```
+> **Windows note:** Use the full Ruby path `/c/Ruby33-x64/bin/bundle` — the shell picks up a stub from WindowsApps otherwise.
 
 ### Build only
 ```bash
-bundle exec jekyll build
+/c/Ruby33-x64/bin/bundle exec jekyll build
 ```
 
 ### Dependencies
 ```bash
-bundle install
+/c/Ruby33-x64/bin/bundle install
 ```
 
 ---
