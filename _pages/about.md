@@ -10,7 +10,7 @@ redirect_from:
 
 # Hello!
 
-Hi, my name is Ege. I'm a Data Scientist based in San Francisco. You can check out my [resume](/cv/) and [publications](/publications/), or browse my [blog posts](/year-archive/) on statistics, data science, and physics.
+Hi, my name is Ege. I'm a Data Scientist based in the San Francisco Bay Area. You can check out my [resume](/cv/) and [publications](/publications/), or browse my [blog posts](/year-archive/) on statistics, data science, and physics.
 
 ## About me
 
