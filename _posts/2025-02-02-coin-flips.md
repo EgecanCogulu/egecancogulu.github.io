@@ -9,7 +9,6 @@ tags:
 
 ---
 
-## Introduction
 When making decisions based on probability and uncertainty, first we have a choice to make in our approach. Our two choices are the **Frequentist** and the **Bayesian** interpretations. These frameworks differ fundamentally in how they interpret probability and uncertainty. Frequentists define probability as the long-run frequency of an event occurring, while Bayesians treat probability as a degree of belief that updates with new evidence.
 
 A simple but illustrative example of these differences is the question of whether a coin is fair given some data about the coin. Suppose we flip a coin **N = 10 times**, what can we conclude about its fairness based on the observed outcome? In this post, we will explore how each approach answers this question.
