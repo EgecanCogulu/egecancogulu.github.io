@@ -22,7 +22,7 @@ I work on ads measurement at Meta, where I help advertisers understand the true 
 
 **Happy Returns (PayPal / UPS)** *(May 2022 – May 2025)*
 
-Before Meta, I spent three years at Happy Returns, a retail returns platform that was acquired by PayPal and later UPS during my time there. I started out building predictive models to forecast shipping supply needs across thousands of locations and creating dashboards that teams across the company ended up relying on. Over time my work shifted toward experimentation and optimization: I led multi-round A/B tests on customer-facing features and built time-series forecasting pipelines to optimize shipping logistics across 10,000 centers. It was a good environment to develop a broad set of skills quickly, and I got to see the company through its acquisition by UPS while my role kept growing.
+Before Meta, I spent three years at Happy Returns, a retail returns platform that was acquired by PayPal and later UPS during my time there. I started out building predictive models to forecast shipping supply needs across thousands of locations and creating dashboards that teams across the company ended up relying on. Over time my work shifted toward experimentation and optimization. I led multi-round A/B tests on customer-facing features and built time-series forecasting pipelines to optimize shipping logistics across 10,000 centers. It was a good environment to develop a broad set of skills quickly, and I got to see the company through its acquisition by UPS while my role kept growing.
 
 **Graduate Research, NYU** *(Sep 2016 – May 2022)*
 
