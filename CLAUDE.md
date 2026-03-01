@@ -124,26 +124,12 @@ category: firstauthor  # thesis | firstauthor | manuscripts
 ## Navigation
 
 Defined in `_data/navigation.yml`. Current links:
-- Posts → /year-archive/
+- Blog → /year-archive/
 - Publications → /publications/
 - Portfolio → /portfolio/
-- Resume / CV → /cv/
+- Resume → /cv/
 
 To add a new nav item, edit `_data/navigation.yml`.
-
----
-
-## Existing Blog Posts
-
-| Date | Title | Tags |
-|------|-------|------|
-| 2024-11-11 | Bootstrapping for Confidence Intervals and A/B Testing | Data Science, A/B Testing |
-| 2024-11-24 | The Counter-Intuitiveness of 'Random' | Probability, Randomness |
-| 2024-12-17 | Double Round Robin Simulation | Simulation, Chess |
-| 2025-02-02 | Bayesian vs. Frequentist Approach | Bayesian, Statistics |
-| 2026-02-23 | The Ising Model: Phase Transitions | Physics, Monte Carlo |
-
-Three posts (randomness, round-robin, ising-model) are currently untracked in git.
 
 ---
 

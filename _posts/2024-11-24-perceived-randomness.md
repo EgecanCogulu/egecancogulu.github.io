@@ -2,7 +2,6 @@
 title: 'The Counter-Intuitiveness of "Random"'
 date: 2024-11-24
 permalink: /posts/2024/11/randomness/
-published: false
 tags:
   - Probability
   - Randomness
@@ -18,7 +17,7 @@ If you were asked to place 250 dots randomly on a blank square, you'd probably t
 
 The right panel shows 250 points drawn from a true uniform distribution.
 
-<iframe src="https://egecancogulu.github.io/images/random_points.html" style="width: 100%; height: 530px; border: none;"></iframe>
+<iframe src="/images/random_points.html" style="width: 100%; height: 510px; border: none;"></iframe>
 
 The difference is immediate. True random points cluster. There are regions with several overlapping dots and large empty patches right next to them. This is exactly what randomness produces.
 
@@ -30,13 +29,13 @@ The point density in each panel is color-coded: darker means more crowded. The h
 
 Imagine flipping a fair coin 100 times and writing down what you think the results look like. Most people write something that alternates fairly often (THTHTHTHHTHTH) with maybe an occasional run of two or three. Long runs of five, six, or seven feel too unlikely to write down.
 
-In 100 fair coin flips, the expected longest run of heads (or tails) is around 6 or 7. Seeing seven heads in a row somewhere in 100 flips is more likely than not.
+In 256 fair coin flips, the expected longest run of heads (or tails) is around 8 or 9. Seeing eight heads in a row somewhere in 256 flips is more likely than not.
 
-The visualization below compares a truly random sequence of 100 flips against a human-like sequence (generated with a 70% chance of switching at each step, mimicking how people fake randomness). Toggle between them and look at the run length distributions on the right.
+The visualization below compares a truly random sequence of 256 flips against a human-like sequence (generated with a 75% chance of switching at each step, mimicking how people fake randomness). Toggle between them and look at the run length distributions on the right.
 
-<iframe src="https://egecancogulu.github.io/images/coin_runs.html" style="width: 100%; height: 510px; border: none;"></iframe>
+<iframe src="/images/coin_runs.html" style="width: 100%; height: 480px; border: none;"></iframe>
 
-The human-like sequence has almost no runs longer than 3. The true random sequence has several, including one of length 7. The distribution chart makes this concrete: the human version is heavily skewed toward short runs, while the true random version spreads across lengths the way probability theory predicts.
+The human-like sequence has almost no runs longer than 3. The true random sequence has several, including one of length 8. The distribution chart makes this concrete: the human version is heavily skewed toward short runs, while the true random version spreads across lengths the way probability theory predicts.
 
 This is the gambler's fallacy. After seeing four heads in a row, the next flip feels like it should be tails. Each flip is independent, and the coin has no memory of what came before.
 
@@ -46,10 +45,10 @@ Spotify's original shuffle was truly random. Users complained it was broken. Son
 
 Spotify eventually replaced it with a smarter algorithm that spaces artists out deliberately. The result is less random but feels more random because it matches expectations.
 
-The visualization below shows 40 songs from 5 artists. Both rows contain the same songs: one in a true random order, the other in a smart shuffle.
+The visualization below shows 40 songs from 5 artists: Radiohead, Kendrick Lamar, Beyoncé, Daft Punk, and Johnny Cash. Both rows contain the same songs: one in a true random order, the other in a smart shuffle.
 
-<iframe src="https://egecancogulu.github.io/images/playlist_shuffle.html" style="width: 100%; height: 340px; border: none;"></iframe>
+<iframe src="/images/playlist_shuffle.html" style="width: 100%; height: 340px; border: none;"></iframe>
 
 The true random row has 7 cases where the same artist plays back to back. The smart shuffle has none. The smart shuffle looks right to us. The true random one looks like something went wrong.
 
-Neither judgment is really about randomness. It is about whether the output matches what we expect randomness to look like — which, as these three examples show, is usually wrong.
+Neither judgment is really about randomness. It is about whether the output matches what we expect randomness to look like, which, as these three examples show, is usually wrong.
