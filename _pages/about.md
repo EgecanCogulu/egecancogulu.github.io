@@ -1,11 +1,15 @@
 ---
 permalink: /
-title: "Hello!"
+title: "Ege Cogulu"
 author_profile: true
 redirect_from: 
   - /about/
   - /about.html
 ---
+<style>.page__title { display: none; }</style>
+
+# Hello!
+
 Hi, my name is Ege. I'm a Data Scientist based in San Francisco. You can check out my [resume](/cv/) and [publications](/publications/), or browse my [blog posts](/year-archive/) on statistics, data science, and physics.
 
 ## About me
