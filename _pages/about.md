@@ -32,7 +32,7 @@ My PhD research at the [Center for Quantum Phenomena](https://as.nyu.edu/departm
 
 I write about topics I find interesting in the [posts](/year-archive/) section, mostly statistics, probability, and the occasional physics simulation.
 
-Below is an interactive Ising model simulation from a [recent blog post](/posts/2026/02/ising-model/).
+Below is an interactive Ising model simulation from an upcoming blog post.
 <br>
 (Press play to restart!)
 <iframe
