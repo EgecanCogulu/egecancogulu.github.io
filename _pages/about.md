@@ -18,7 +18,7 @@ I am a Senior Data Scientist with a background in experimental physics, speciali
 
 **Meta** *(Jun 2025 – Present)*
 
-I work on ads measurement at Meta, where I help advertisers understand the true return on investment of their ad campaigns. My work focuses on building and strengthening attribution strategy by integrating experimentation with causal inference methods (difference-in-differences, propensity score matching, synthetic controls, and incrementality frameworks) to better reflect how the advertising industry measures impact. I also lead cross-functional efforts to standardize fair-credit rules for external measurement partners across methodologies like multi-touch attribution (MTA), media mix modeling (MMM), and geo-based lift studies (GeoLift). This work has had a 0.1% incremental revenue impact, translating to roughly $160M per year.
+I work on ads measurement at Meta, where I help advertisers understand the true return on investment of their ad campaigns. My work focuses on building and strengthening attribution strategy by integrating experimentation with causal inference methods (difference-in-differences, propensity score matching, synthetic controls, and incrementality frameworks) to better reflect how the advertising industry measures impact. I also lead cross-functional efforts to standardize fair-credit rules for external measurement partners across methodologies like multi-touch attribution (MTA), media mix modeling (MMM), and geo-based lift studies (GeoLift).
 
 **Happy Returns (PayPal / UPS)** *(May 2022 – May 2025)*
 
