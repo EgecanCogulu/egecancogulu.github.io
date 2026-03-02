@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bayesian vs. Frequentist Approach — Ege Cogulu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$$', '$$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true,
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Main <span>Page</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container post-layout">
+
+  <div class="post-header">
+    <p class="section-label">Blog</p>
+    <h1 class="post-title">Bayesian vs. Frequentist Approach to Probability and Uncertainty</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">February 2, 2025</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Bayesian</span>
+        <span class="blog-tag">Frequentist</span>
+        <span class="blog-tag">Confidence Intervals</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+
+    <p>
+      Two schools of thought dominate statistical inference: the Frequentist and the Bayesian approach.
+      Using a simple coin flip example, this post walks through how each framework builds uncertainty intervals,
+      what those intervals actually mean, and when to reach for one over the other.
+    </p>
+
+    <h2>Introduction</h2>
+
+    <p>
+      When making decisions based on probability and uncertainty, we have a choice of approach. Our two options
+      are the <strong>Frequentist</strong> and the <strong>Bayesian</strong> interpretations. These frameworks
+      differ fundamentally in how they interpret probability and uncertainty. Frequentists define probability as
+      the long-run frequency of an event occurring, while Bayesians treat probability as a degree of belief that
+      updates with new evidence.
+    </p>
+
+    <p>
+      A simple but illustrative example is the question of whether a coin is fair given some observed data.
+      Suppose we flip a coin <strong>N = 10 times</strong> — what can we conclude about its fairness based on
+      the observed outcome? This post explores how each approach answers that question.
+    </p>
+
+    <h2>Frequentist Approach</h2>
+
+    <p>
+      The frequentist method estimates the probability of heads, denoted as $$p$$, based solely on observed data.
+      A common approach is to construct a <strong>confidence interval</strong> for $$p$$, which provides a range
+      of plausible values based on the sample proportion.
+    </p>
+
+    <h3>Confidence Interval for Coin Fairness</h3>
+
+    <p>
+      Say we observe <strong>7 heads out of 10 flips</strong>. The frequentist estimate of $$p$$ is simply:
+    </p>
+
+    \[\hat{p} = \frac{7}{10} = 0.70\]
+
+    <p>Using a <strong>95% confidence interval</strong> for a binomial distribution:</p>
+
+    \[CI = \hat{p} \pm Z_{0.025} \times \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}}\]
+
+    <p>Substituting values ($$Z_{0.025} = 1.96$$, $$n = 10$$):</p>
+
+    \[CI = 0.70 \pm 1.96 \times \sqrt{\frac{0.70 \times 0.30}{10}} = 0.70 \pm 0.284\]
+
+    <p>
+      Rounding, we get the confidence interval: <strong>[0.416, 0.984]</strong>, or approximately <strong>[0.42, 0.98]</strong>.
+      A frequentist interpretation is that if we repeated this experiment many times, 95% of such intervals
+      would contain the true value of $$p$$. It does <strong>not</strong> tell us the probability that $$p$$
+      lies in this specific range.
+    </p>
+
+    <h2>Bayesian Approach</h2>
+
+    <p>
+      The Bayesian method applies <strong>Bayes' theorem</strong> to update prior beliefs about $$p$$ based on
+      observed data.
+    </p>
+
+    <h3>Bayes' Theorem</h3>
+
+    \[P(H | D) = \frac{P(D | H) \, P(H)}{P(D)}\]
+
+    <p>Where:</p>
+    <ul>
+      <li>$$P(H \mid D)$$ is the <em>posterior</em> probability of fairness given the data (7 heads out of 10 flips),</li>
+      <li>$$P(D \mid H)$$ is the likelihood of observing the data under a given $$p$$,</li>
+      <li>$$P(H)$$ is the <em>prior</em> belief about $$p$$,</li>
+      <li>$$P(D)$$ is the marginal probability of the data.</li>
+    </ul>
+
+    <h3>Choosing a Prior</h3>
+
+    <p>
+      A common prior for coin fairness is the <strong>Beta distribution</strong>: $$\text{Beta}(\alpha, \beta)$$,
+      where $$\alpha$$ and $$\beta$$ represent prior "pseudo-counts" of heads and tails. A uniform prior
+      $$\text{Beta}(1,1)$$ assigns equal probability to all values of $$p$$ between 0 and 1, expressing
+      complete uncertainty. This is mathematically equivalent to observing 1 hypothetical head and 1
+      hypothetical tail before seeing any real data.
+    </p>
+
+    <h3>Updating with Data</h3>
+
+    <p>
+      Given 7 heads in 10 flips, the posterior follows a $$\text{Beta}(\alpha + 7, \beta + 3)$$ distribution,
+      or $$\text{Beta}(8,4)$$. The Bayesian credible interval can be directly computed from this posterior.
+      For this example, the 95% credible interval is approximately <strong>[0.408, 0.891]</strong>.
+    </p>
+
+    <p>
+      Unlike the frequentist approach, the Bayesian method allows direct probability statements:
+      <em>"Given our prior belief and the observed data, there is a 95% probability that $$p$$ lies within [0.408, 0.891]."</em>
+      This is a statement about $$p$$ itself, not about a repeated sampling procedure.
+    </p>
+
+    <hr>
+
+    <h2>Comparing the Two Approaches</h2>
+
+    <h3>Key Differences</h3>
+
+    <p><strong>Confidence Intervals vs. Credible Intervals:</strong></p>
+    <ul>
+      <li>
+        <strong>Frequentist:</strong> The 95% confidence interval [0.42, 0.98] means that if you repeated this
+        experiment infinitely many times and computed an interval each time, 95% of those intervals would contain
+        the true $$p$$. You <em>cannot</em> say "there is a 95% probability that $$p$$ lies here." Once the
+        experiment is done, $$p$$ is either in the interval or not.
+      </li>
+      <li>
+        <strong>Bayesian:</strong> The 95% credible interval [0.408, 0.891] means that given your prior belief
+        and the data, there is a 95% probability that $$p$$ lies in this range. This directly answers the
+        question most people intuitively ask.
+      </li>
+    </ul>
+
+    <p><strong>When to Use Each Approach:</strong></p>
+    <ul>
+      <li>Use <strong>Frequentist</strong> methods when: you're in a standardized scientific field with established protocols, you want to avoid subjective prior choices, or you're testing whether an effect exists at all.</li>
+      <li>Use <strong>Bayesian</strong> methods when: you have meaningful prior knowledge you want to incorporate, you need to make decisions under uncertainty, or you want direct probability statements about parameters.</li>
+    </ul>
+
+    <h3>Frequentist Confidence Interval Visualization</h3>
+
+    <p>
+      The interactive plot below shows how 95% confidence intervals change based on the observed number of
+      heads (from 0 to 10) in 10 flips. Notice that when you observe very few or very many heads, the interval
+      is narrower, while intermediate values show wider uncertainty.
+    </p>
+
+    <div class="embed-wrap-plotly">
+      <iframe src="https://egecancogulu.github.io/images/confidence_interval_plot_10_coin_flips.html" title="Frequentist confidence interval visualization"></iframe>
+    </div>
+
+    <h3>Bayesian Posterior Visualizations</h3>
+
+    <p>
+      The first visualization shows the posterior distribution using a <strong>uniform prior</strong>
+      $$\text{Beta}(1,1)$$, representing complete ignorance about the coin.
+    </p>
+
+    <div class="embed-wrap-plotly">
+      <iframe src="https://egecancogulu.github.io/images/bayesian_plot_uniform_prior.html" title="Bayesian posterior with uniform prior"></iframe>
+    </div>
+
+    <p>Bayesian credible interval with uniform prior (minimal prior assumptions).</p>
+
+    <p>
+      The second visualization uses a <strong>strong prior</strong> that assumes the coin is fair (centered
+      near $$p = 0.5$$). Compare the two: with the strong prior, observing 7 heads pulls the posterior less
+      dramatically away from 0.5, because you started with a strong belief in fairness. This illustrates how
+      prior choice affects conclusions.
+    </p>
+
+    <div class="embed-wrap-plotly">
+      <iframe src="https://egecancogulu.github.io/images/bayesian_plot_strong_prior.html" title="Bayesian posterior with strong prior"></iframe>
+    </div>
+
+    <p>Bayesian credible interval with strong prior (assumes coin fairness before seeing data).</p>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      The frequentist and Bayesian approaches offer fundamentally different perspectives on the same data.
+      Neither is universally "correct."
+    </p>
+
+    <p>
+      <strong>Frequentists</strong> ask: "If this experiment were repeated many times, what range of values would
+      contain the true parameter 95% of the time?" This provides a principled, reproducible framework free from
+      subjective priors.
+    </p>
+
+    <p>
+      <strong>Bayesians</strong> ask: "Given my prior beliefs and the data I observed, what is the probability
+      distribution over possible parameter values?" This directly answers what most practitioners intuitively
+      want to know, but requires specifying prior assumptions.
+    </p>
+
+    <p>
+      Choose your approach based on your goals: use frequentist confidence intervals for standardized hypothesis
+      testing and regulatory compliance; use Bayesian credible intervals when you have prior knowledge worth
+      incorporating and need direct probability statements. In practice, both approaches coexist. They're asking
+      different questions about the same problem.
+    </p>
+
+  </article>
+
+  <aside class="post-toc">
+    <div class="toc-label">In this post</div>
+    <ul id="toc-list"></ul>
+  </aside>
+  </div>
+
+  <div class="post-nav">
+    <a href="randomness.html" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous: The Counter-Intuitiveness of "Random"
+    </a>
+    <a href="../index.html#blog" class="btn btn-secondary">
+      All posts
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(240,244,248,0.97)'
+      : 'rgba(240,244,248,0.85)';
+  }, { passive: true });
+
+  const headings = document.querySelectorAll('.prose h2');
+  const tocList = document.getElementById('toc-list');
+  headings.forEach((h, i) => {
+    h.id = 'section-' + i;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#section-' + i;
+    a.textContent = h.textContent;
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+
+  const tocLinks = tocList.querySelectorAll('a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    headings.forEach(h => {
+      if (window.scrollY >= h.offsetTop - 100) current = h.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>

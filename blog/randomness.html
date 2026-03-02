@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Counter-Intuitiveness of "Random" — Ege Cogulu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Main <span>Page</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container post-layout">
+
+  <div class="post-header">
+    <p class="section-label">Blog</p>
+    <h1 class="post-title">The Counter-Intuitiveness of "Random"</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">November 24, 2024</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Probability</span>
+        <span class="blog-tag">Randomness</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+
+    <p>
+      What does "random" actually look like? Most people have a confident answer: scattered, spread out,
+      no obvious patterns. But true randomness looks nothing like that. It clusters, repeats, and surprises
+      in ways our intuitions don't expect.
+    </p>
+
+    <p>This post walks through three examples.</p>
+
+    <h2>Random Points Don't Spread Out</h2>
+
+    <p>
+      If you were asked to place 250 dots randomly on a blank square, you'd probably try to spread them out.
+      No obvious rows or columns, but no big gaps or obvious clumps either. Something like the left panel below.
+    </p>
+
+    <p>The right panel shows 250 points drawn from a true uniform distribution.</p>
+
+    <div class="embed-wrap">
+      <iframe src="https://egecancogulu.github.io/images/random_points.html" height="510" title="Random points visualization"></iframe>
+    </div>
+
+    <p>
+      The difference is immediate. True random points cluster. There are regions with several overlapping dots
+      and large empty patches right next to them. This is exactly what randomness produces.
+    </p>
+
+    <p>
+      The intuition failure here is subtle. When people try to make something "look random," they avoid clumps.
+      But avoiding clumps is itself a constraint. True randomness has no such preference for uniformity.
+    </p>
+
+    <p>
+      The point density in each panel is color-coded: darker means more crowded. The human intuition panel is
+      nearly uniform. The true random panel has clear hot spots.
+    </p>
+
+    <h2>Coin Flips Don't Alternate</h2>
+
+    <p>
+      Imagine flipping a fair coin 100 times and writing down what you think the results look like. Most people
+      write something that alternates fairly often (THTHTHTHHTHTH) with maybe an occasional run of two or three.
+      Long runs of five, six, or seven feel too unlikely to write down.
+    </p>
+
+    <p>
+      In 256 fair coin flips, the expected longest run of heads (or tails) is around 8 or 9. Seeing eight heads
+      in a row somewhere in 256 flips is more likely than not.
+    </p>
+
+    <p>
+      The visualization below compares a truly random sequence of 256 flips against a human-like sequence
+      (generated with a 75% chance of switching at each step, mimicking how people fake randomness). Toggle
+      between them and look at the run length distributions on the right.
+    </p>
+
+    <div class="embed-wrap">
+      <iframe src="https://egecancogulu.github.io/images/coin_runs.html" height="480" title="Coin runs visualization"></iframe>
+    </div>
+
+    <p>
+      The human-like sequence has almost no runs longer than 3. The true random sequence has several, including
+      one of length 8. The distribution chart makes this concrete: the human version is heavily skewed toward
+      short runs, while the true random version spreads across lengths the way probability theory predicts.
+    </p>
+
+    <p>
+      This is the gambler's fallacy. After seeing four heads in a row, the next flip feels like it should be tails.
+      Each flip is independent, and the coin has no memory of what came before.
+    </p>
+
+    <h2>Shuffle That Feels Random Isn't</h2>
+
+    <p>
+      Spotify's original shuffle was truly random. Users complained it was broken. Songs by the same artist kept
+      playing back to back, and the same song sometimes came up twice in an hour. All expected outputs of a uniform
+      random process.
+    </p>
+
+    <p>
+      Spotify eventually replaced it with a smarter algorithm that spaces artists out deliberately. The result is
+      less random but feels more random because it matches expectations.
+    </p>
+
+    <p>
+      The visualization below shows 40 songs from 5 artists: Radiohead, Kendrick Lamar, Beyoncé, Daft Punk,
+      and Johnny Cash. Both rows contain the same songs: one in a true random order, the other in a smart shuffle.
+    </p>
+
+    <div class="embed-wrap">
+      <iframe src="https://egecancogulu.github.io/images/playlist_shuffle.html" height="340" title="Playlist shuffle visualization"></iframe>
+    </div>
+
+    <p>
+      The true random row has 7 cases where the same artist plays back to back. The smart shuffle has none.
+      The smart shuffle looks right to us. The true random one looks like something went wrong.
+    </p>
+
+    <p>
+      Neither judgment is really about randomness. It's about whether the output matches what we expect randomness
+      to look like — which, as these three examples show, is usually wrong.
+    </p>
+
+  </article>
+
+  <aside class="post-toc">
+    <div class="toc-label">In this post</div>
+    <ul id="toc-list"></ul>
+  </aside>
+  </div>
+
+  <div class="post-nav">
+    <a href="ab-testing.html" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous: Bootstrapping for A/B Testing
+    </a>
+    <a href="coin-flips.html" class="btn btn-secondary">
+      Next: Bayesian vs. Frequentist
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(240,244,248,0.97)'
+      : 'rgba(240,244,248,0.85)';
+  }, { passive: true });
+
+  const headings = document.querySelectorAll('.prose h2');
+  const tocList = document.getElementById('toc-list');
+  headings.forEach((h, i) => {
+    h.id = 'section-' + i;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#section-' + i;
+    a.textContent = h.textContent;
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+
+  const tocLinks = tocList.querySelectorAll('a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    headings.forEach(h => {
+      if (window.scrollY >= h.offsetTop - 100) current = h.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrapping for Confidence Intervals and A/B Testing — Ege Cogulu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$$', '$$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        tags: 'ams',
+        processEscapes: true,
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Main <span>Page</span></a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container post-layout">
+
+  <div class="post-header">
+    <p class="section-label">Blog</p>
+    <h1 class="post-title">Bootstrapping for Confidence Intervals and A/B Testing</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">November 11, 2024</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Data Science</span>
+        <span class="blog-tag">A/B Testing</span>
+        <span class="blog-tag">Hypothesis Testing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+
+    <p>
+      When running experiments, like A/B tests, understanding uncertainty and statistical significance matters a lot.
+      This post explores how the bootstrapping method helps calculate confidence intervals and p-values in an A/B test scenario.
+    </p>
+
+    <p>The two main questions we're trying to answer are:</p>
+    <ol>
+      <li>How do we calculate the confidence interval for the metric we are measuring?</li>
+      <li>How do we determine if the results of an A/B test are statistically significant?</li>
+    </ol>
+
+    <h3>Scenario: A/B Test on Sign-Up Button Color</h3>
+
+    <p>
+      Imagine you're a data scientist testing a new design for a website's sign-up button. The original button is blue,
+      and you're testing an orange version, hypothesizing that it will lead to higher sign-up rates.
+    </p>
+
+    <p>To correctly evaluate the experiment, we need to:</p>
+    <ul>
+      <li>Measure the current sign-up rate (control group).</li>
+      <li>Compare it to the sign-up rate with the new button (experiment group).</li>
+      <li>Account for uncertainty in these measurements.</li>
+    </ul>
+
+    <h2>What is Bootstrapping?</h2>
+
+    <p>
+      Bootstrapping is a resampling method that involves generating multiple "fake" datasets by randomly sampling
+      (with replacement) from the observed data. Each sample provides a slightly different perspective on the underlying
+      distribution, enabling us to estimate the uncertainty of our metrics.
+    </p>
+
+    <p>
+      Resampling with replacement ensures variability, mimicking our uncertainty about the population. Additionally,
+      the <a href="https://en.wikipedia.org/wiki/Central_limit_theorem" target="_blank">Central Limit Theorem</a> helps
+      ensure that the means of our resampled datasets follow a normal distribution.
+    </p>
+
+    <p>We use bootstrapping to:</p>
+    <ol>
+      <li>Compute confidence intervals.</li>
+      <li>Conduct hypothesis testing.</li>
+    </ol>
+
+    <h2>Calculating Confidence Intervals</h2>
+
+    <p>
+      To understand the uncertainty in our measurements, we calculate confidence intervals for the observed sign-up
+      rate in the control group. Bootstrapping allows us to estimate these intervals without relying on theoretical
+      assumptions about the underlying distribution.
+    </p>
+
+    <img
+      class="post-img"
+      src="https://egecancogulu.github.io/images/confidence_interval.png"
+      alt="Histogram of the bootstrapped means with vertical lines indicating the confidence interval bounds."
+    >
+    <p class="img-caption">
+      Fig. 1: A histogram showing distribution of means of 50,000 bootstrapped samples.
+      Original (measured) data set has 10,000 visitors with 25% sign-up rate.
+    </p>
+
+    <p>Steps:</p>
+    <ol>
+      <li>Resample the observed data multiple times (e.g., 50,000 iterations).</li>
+      <li>Compute the metric of interest (e.g., mean sign-up rate) for each resampled dataset.</li>
+      <li>Sort the metric values and extract the desired percentiles (e.g., 2.5th and 97.5th for a 95% CI).</li>
+    </ol>
+
+    <pre><code># Calculate 95% confidence intervals using bootstrapping
+ctrl_bootstrap_means = []
+for i in range(50_000):
+    ctrl_bootstrap_means.append(
+        np.random.choice(ctrl_dataset, len(ctrl_dataset), replace=True).mean()
+    )
+
+lower_bound = np.percentile(ctrl_bootstrap_means, 2.5)
+upper_bound = np.percentile(ctrl_bootstrap_means, 97.5)
+print(f"95% CI for bootstrapped samples: {lower_bound:.5f}, {upper_bound:.5f}")</code></pre>
+
+    <pre><code>95% CI for bootstrapped samples: 0.24730, 0.25269</code></pre>
+
+    <h2>Hypothesis Testing with Bootstrapping</h2>
+
+    <p>
+      In an A/B test, the goal is to evaluate whether the experimental group (orange button) performs significantly
+      better than the control group (blue button). Bootstrapping provides a way to calculate p-values by resampling.
+    </p>
+
+    <img
+      class="post-img"
+      src="https://egecancogulu.github.io/images/ab_testing.png"
+      alt="A histogram showing bootstrapped confidence intervals"
+    >
+    <p class="img-caption">Fig 2: A histogram showing bootstrapped samples from control and experiment group.</p>
+
+    <h3>Steps:</h3>
+    <ol>
+      <li>Resample both control and experimental groups (e.g., 50,000 iterations each).</li>
+      <li>Record the mean sign-up rate for each resampled dataset.</li>
+      <li>Compute the difference between the bootstrapped means.</li>
+      <li>Estimate the p-value as the proportion of iterations where the experimental group performed worse than or equal to the control group.</li>
+    </ol>
+
+    <pre><code># Bootstrapping for hypothesis testing
+diff_means = []
+for i in range(50_000):
+    diff_means.append(
+        np.random.choice(exp_dataset, len(exp_dataset), replace=True).mean()
+        - np.random.choice(ctrl_dataset, len(ctrl_dataset), replace=True).mean()
+    )
+
+p_value = (np.array(diff_means) <= 0).mean()
+print(f"P-value: {p_value:.5f}")</code></pre>
+
+    <pre><code>P-value: 0.13634</code></pre>
+
+    <img
+      class="post-img"
+      src="https://egecancogulu.github.io/images/hypothesis-testing.png"
+      alt="A histogram of the differences of bootstrapped samples"
+    >
+    <p class="img-caption">
+      Fig 3: A histogram of the differences of bootstrapped samples.
+      Proportion of values below zero represents the p-value.
+    </p>
+
+    <p>
+      A p-value of 0.136 is significantly higher than the traditionally chosen 0.05 limit.
+      That means under the null hypothesis (if there is no difference between experiment and control),
+      there is a 13.6% chance of seeing a result like this just due to random chance.
+      Therefore we <strong>can't</strong> reject the null hypothesis.
+    </p>
+
+    <h2>Comparing Bootstrap Results to Theoretical Values</h2>
+
+    <p>Bootstrapping is particularly valuable when:</p>
+    <ul>
+      <li>The sample size is small.</li>
+      <li>The data does not follow standard distributions (e.g., normal or binomial).</li>
+    </ul>
+
+    <p>
+      However, when assumptions about the distribution hold (e.g., binomial for success/failure data),
+      theoretical calculations can serve as a benchmark. Let's compare our findings to theoretical values.
+    </p>
+
+    <h3>1. Confidence intervals: bootstrapping vs. theoretical</h3>
+
+    <p>The confidence interval for a binomial distribution:</p>
+
+    \[CI = \hat{p} \pm Z_{\alpha/2} \cdot \sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}\]
+
+    <p>Where:</p>
+    <ul>
+      <li>$$\hat{p}$$ = observed proportion (e.g., success rate)</li>
+      <li>$$Z_{\alpha/2}$$ = Z-score corresponding to the desired confidence level</li>
+      <li>$$n$$ = sample size</li>
+    </ul>
+
+    <pre><code># Calculate 95% confidence intervals using theoretical distribution
+ctrl_std_err = np.sqrt(ctrl_mean * (1 - ctrl_mean) / len(ctrl_dataset))
+ci_lower = ctrl_mean - sp.stats.norm.ppf(0.975) * ctrl_std_err
+ci_upper = ctrl_mean + sp.stats.norm.ppf(0.975) * ctrl_std_err
+print(f"95% CI from theoretical binomial distribution: {ci_lower:.5f}, {upper_bound:.5f}")</code></pre>
+
+    <pre><code>95% CI from theoretical binomial distribution: 0.24732, 0.25269</code></pre>
+
+    <h3>2. P-values: bootstrapping vs. traditional hypothesis tests</h3>
+
+    <p>The test statistic for hypothesis testing of the difference between two proportions:</p>
+
+    \[Z = \frac{(\hat{p}_A - \hat{p}_B)}{\sqrt{\hat{p}(1 - \hat{p}) \left(\frac{1}{n_A} + \frac{1}{n_B}\right)}}\]
+
+    <p>Where:</p>
+    <ul>
+      <li>$$\hat{p}_A$$, $$\hat{p}_B$$ = observed proportions for groups A and B</li>
+      <li>$$\hat{p} = \frac{x_A + x_B}{n_A + n_B}$$ = pooled proportion</li>
+      <li>$$n_A, n_B$$ = sample sizes</li>
+    </ul>
+
+    <pre><code># Calculate pooled proportion under the null hypothesis
+pooled_successes = np.sum(ctrl_dataset) + np.sum(exp_dataset)
+pooled_trials = len(ctrl_dataset) + len(exp_dataset)
+pooled_proportion = pooled_successes / pooled_trials
+
+# Combined standard error
+se_combined = np.sqrt(
+    pooled_proportion * (1 - pooled_proportion) * (1 / len(ctrl_dataset) + 1 / len(exp_dataset))
+)
+
+# Z-test statistic
+z_stat = (exp_mean - ctrl_mean) / se_combined
+
+# P-value for one-tailed test
+p_value = (1 - sp.stats.norm.cdf(abs(z_stat)))
+
+print(f"Z-Statistic: {z_stat:.4f}")
+print(f"P-Value: {p_value:.4f}")</code></pre>
+
+    <pre><code>Z-Statistic: 1.10030
+P-Value: 0.13560</code></pre>
+
+    <p>In all cases, the bootstrapped calculation and theory match at least 3 significant digits after the decimal.</p>
+
+    <h3>Key Considerations for Bootstrapping</h3>
+    <ul>
+      <li>The sampled data must be unbiased.</li>
+      <li>Bootstrapping assumes the observed data represents the population well.</li>
+    </ul>
+
+    <h2>Conclusion</h2>
+
+    <p>
+      Bootstrapping is my go-to tool for estimating uncertainty and testing hypotheses, particularly when presenting
+      to non-technical stakeholders. Through this method, you can:
+    </p>
+    <ul>
+      <li>Understand (and visualize) the range of plausible values for your metrics.</li>
+      <li>Test hypotheses with fewer assumptions, leveraging the power of resampling.</li>
+      <li>Develop a more intuitive understanding of confidence intervals and hypothesis testing.</li>
+    </ul>
+
+  </article>
+
+  <aside class="post-toc">
+    <div class="toc-label">In this post</div>
+    <ul id="toc-list"></ul>
+  </aside>
+  </div>
+
+  <div class="post-nav">
+    <a href="../index.html#blog" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      All posts
+    </a>
+    <a href="randomness.html" class="btn btn-secondary">
+      Next: The Counter-Intuitiveness of "Random"
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // Nav scroll effect
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(240,244,248,0.97)'
+      : 'rgba(240,244,248,0.85)';
+  }, { passive: true });
+
+  // Auto-generate TOC from h2 headings
+  const headings = document.querySelectorAll('.prose h2');
+  const tocList = document.getElementById('toc-list');
+  headings.forEach((h, i) => {
+    h.id = 'section-' + i;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#section-' + i;
+    a.textContent = h.textContent;
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+
+  // Highlight active TOC item on scroll
+  const tocLinks = tocList.querySelectorAll('a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    headings.forEach(h => {
+      if (window.scrollY >= h.offsetTop - 100) current = h.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>
