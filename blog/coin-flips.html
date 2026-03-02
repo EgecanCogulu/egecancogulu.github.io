@@ -35,14 +35,14 @@
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div class="nav-dropdown">
-    <a href="../index.html#about">About</a>
-    <a href="../index.html#experience">Experience</a>
-    <a href="../index.html#blog">Blog</a>
-    <a href="../index.html#publications">Publications</a>
-    <a href="../cv.html" class="btn-nav">Resume</a>
-  </div>
 </nav>
+<div class="nav-dropdown">
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#blog">Blog</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../cv.html" class="btn-nav">Resume</a>
+</div>
 
 <div class="container post-layout">
 
@@ -281,12 +281,12 @@
 
   const burger = document.querySelector('.nav-burger');
   burger.addEventListener('click', () => {
-    const open = nav.classList.toggle('nav-open');
+    const open = document.body.classList.toggle('nav-open');
     burger.setAttribute('aria-expanded', String(open));
   });
   document.querySelectorAll('.nav-dropdown a').forEach(a => {
     a.addEventListener('click', () => {
-      nav.classList.remove('nav-open');
+      document.body.classList.remove('nav-open');
       burger.setAttribute('aria-expanded', 'false');
     });
   });

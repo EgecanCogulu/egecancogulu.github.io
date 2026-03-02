@@ -29,14 +29,14 @@
       <span></span><span></span><span></span>
     </button>
   </div>
-  <div class="nav-dropdown">
-    <a href="#about">About</a>
-    <a href="#experience">Experience</a>
-    <a href="#blog">Blog</a>
-    <a href="#publications">Publications</a>
-    <a href="cv.html" class="btn-nav">Resume</a>
-  </div>
 </nav>
+<div class="nav-dropdown">
+  <a href="#about">About</a>
+  <a href="#experience">Experience</a>
+  <a href="#blog">Blog</a>
+  <a href="#publications">Publications</a>
+  <a href="cv.html" class="btn-nav">Resume</a>
+</div>
 
 <!-- ============================================================
      HERO
@@ -619,12 +619,12 @@
   // Hamburger menu
   const burger = document.querySelector('.nav-burger');
   burger.addEventListener('click', () => {
-    const open = nav.classList.toggle('nav-open');
+    const open = document.body.classList.toggle('nav-open');
     burger.setAttribute('aria-expanded', String(open));
   });
   document.querySelectorAll('.nav-dropdown a').forEach(a => {
     a.addEventListener('click', () => {
-      nav.classList.remove('nav-open');
+      document.body.classList.remove('nav-open');
       burger.setAttribute('aria-expanded', 'false');
     });
   });

@@ -1239,14 +1239,14 @@ nav {
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-nav.nav-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-nav.nav-open .nav-burger span:nth-child(2) { opacity: 0; }
-nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+body.nav-open .nav-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+body.nav-open .nav-burger span:nth-child(2) { opacity: 0; }
+body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .nav-dropdown {
   display: none;
   flex-direction: column;
-  position: absolute;
+  position: fixed;
   top: var(--nav-h);
   left: 0;
   right: 0;
@@ -1271,7 +1271,7 @@ nav.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(
 .nav-dropdown a:hover { color: var(--text); }
 .nav-dropdown .btn-nav { color: var(--accent); font-weight: 600; }
 
-nav.nav-open .nav-dropdown { display: flex; }
+body.nav-open .nav-dropdown { display: flex; }
 
 /* ============================================================
    RESPONSIVE
