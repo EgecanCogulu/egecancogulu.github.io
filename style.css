@@ -1148,6 +1148,16 @@ nav {
   align-items: start;
 }
 
+/* Grid items must opt out of min-width: auto so content
+   (code blocks, equations) can't expand the grid column */
+.post-body-grid > * {
+  min-width: 0;
+}
+
+.prose pre {
+  max-width: 100%;
+}
+
 /* TOC sidebar */
 .post-toc {
   position: sticky;
