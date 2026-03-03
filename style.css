@@ -1202,6 +1202,13 @@ nav {
   padding-bottom: 80px;
 }
 
+/* MathJax display math — prevent overflow on narrow screens */
+mjx-container[display="true"] {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
 /* ============================================================
    FADE-IN ANIMATION
    ============================================================ */
@@ -1305,6 +1312,13 @@ body.nav-open .nav-dropdown { display: flex; }
   }
 
   .stat-value { font-size: 1.4rem; }
+
+  .prose { text-align: left; }
+
+  .post-header {
+    padding: calc(var(--nav-h) + 32px) 0 28px;
+    margin-bottom: 36px;
+  }
 }
 
 /* Blog: collapse to single column below 900px */

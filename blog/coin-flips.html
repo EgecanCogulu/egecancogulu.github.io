@@ -291,6 +291,22 @@
     });
   });
 
+  // Dynamically scale Plotly iframes to fit available width
+  function resizePlotlyCharts() {
+    document.querySelectorAll('.embed-wrap-plotly').forEach(wrap => {
+      const available = wrap.offsetWidth;
+      if (available <= 0) return;
+      const scale = available / 1050;
+      const iframe = wrap.querySelector('iframe');
+      if (iframe) {
+        iframe.style.transform = `scale(${scale})`;
+        wrap.style.height = (650 * scale) + 'px';
+      }
+    });
+  }
+  resizePlotlyCharts();
+  window.addEventListener('resize', resizePlotlyCharts, { passive: true });
+
   const headings = document.querySelectorAll('.prose h2');
   const tocList = document.getElementById('toc-list');
   headings.forEach((h, i) => {
