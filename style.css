@@ -861,6 +861,16 @@ nav {
   line-height: 1.4;
 }
 
+.pub-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pub-title a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
 .pub-authors {
   font-size: 0.8rem;
   color: var(--faint);
