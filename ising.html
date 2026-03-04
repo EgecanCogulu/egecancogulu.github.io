@@ -162,6 +162,23 @@
 
     #btn-reset:hover { background: var(--border); }
 
+    .step-btn {
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 20px;
+      text-align: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .step-btn:hover { background: var(--border); color: var(--text); }
+
     .stats {
       font-size: 0.8rem;
       color: var(--muted);
@@ -211,28 +228,34 @@
     <div class="control-row">
       <label>Grid size</label>
       <select id="sel-size">
-        <option value="50">50 &times; 50</option>
-        <option value="100" selected>100 &times; 100</option>
-        <option value="250">250 &times; 250</option>
+        <option value="100">100 &times; 100</option>
+        <option value="250" selected>250 &times; 250</option>
+        <option value="500">500 &times; 500</option>
       </select>
     </div>
 
     <div class="control-row">
       <label>Temperature T</label>
-      <input type="range" id="sl-temp" min="0.1" max="5.0" step="0.05" value="2.3">
-      <span class="val" id="lbl-temp">2.30</span>
+      <button class="step-btn" id="btn-temp-dn">−</button>
+      <input type="range" id="sl-temp" min="0.1" max="5.0" step="0.05" value="1.0">
+      <button class="step-btn" id="btn-temp-up">+</button>
+      <span class="val" id="lbl-temp">1.00</span>
     </div>
 
     <div class="control-row">
       <label>Field h</label>
+      <button class="step-btn" id="btn-field-dn">−</button>
       <input type="range" id="sl-field" min="-1.0" max="1.0" step="0.1" value="0.0">
+      <button class="step-btn" id="btn-field-up">+</button>
       <span class="val" id="lbl-field">0.00</span>
     </div>
 
     <div class="control-row">
       <label>Steps / frame</label>
-      <input type="range" id="sl-steps" min="1" max="20000" step="1" value="1000">
-      <span class="val" id="lbl-steps">1000</span>
+      <button class="step-btn" id="btn-steps-dn">−</button>
+      <input type="range" id="sl-steps" min="1" max="20000" step="1" value="10000">
+      <button class="step-btn" id="btn-steps-up">+</button>
+      <span class="val" id="lbl-steps">10,000</span>
     </div>
 
     <div class="buttons">
@@ -242,7 +265,7 @@
   </div>
 
   <div class="stats">
-    <span>T: <strong id="stat-T">2.30</strong></span>
+    <span>T: <strong id="stat-T">1.00</strong></span>
     <span>h: <strong id="stat-h">0.00</strong></span>
     <span>Magnetization: <strong id="stat-mag">0.00</strong></span>
     <span>Steps/sec: <strong id="stat-sps">--</strong></span>
@@ -255,10 +278,10 @@
 
 <script>
   // --- State ---
-  let N = 100;
-  let T = 2.3;
+  let N = 250;
+  let T = 1.0;
   let h = 0.0;
-  let stepsPerFrame = 1000;
+  let stepsPerFrame = 10000;
   let running = true;
   let spins = null;
   let animId = null;
@@ -406,13 +429,13 @@
   });
 
   btnReset.addEventListener('click', () => {
-    // Reset controls to defaults
-    T = 1.0; h = 0.0; stepsPerFrame = 10000;
+    N = 250; T = 1.0; h = 0.0; stepsPerFrame = 10000;
+    document.getElementById('sel-size').value = 250;
     const slTemp  = document.getElementById('sl-temp');
     const slField = document.getElementById('sl-field');
     const slSteps = document.getElementById('sl-steps');
-    slTemp.value  = T;    document.getElementById('lbl-temp').textContent  = T.toFixed(2);
-    slField.value = h;    document.getElementById('lbl-field').textContent = h.toFixed(2);
+    slTemp.value  = T;             document.getElementById('lbl-temp').textContent  = T.toFixed(2);
+    slField.value = h;             document.getElementById('lbl-field').textContent = h.toFixed(2);
     slSteps.value = stepsPerFrame; document.getElementById('lbl-steps').textContent = stepsPerFrame.toLocaleString();
 
     if (animId) cancelAnimationFrame(animId);
@@ -443,6 +466,34 @@
     stepsPerFrame = parseInt(this.value);
     document.getElementById('lbl-steps').textContent = stepsPerFrame.toLocaleString();
   });
+
+  // --- +/- step buttons ---
+  function makeNudge(sliderId, lblId, delta, decimals, onUpdate) {
+    const sl = document.getElementById(sliderId);
+    const lbl = document.getElementById(lblId);
+    return () => {
+      const min = parseFloat(sl.min), max = parseFloat(sl.max);
+      const val = Math.min(max, Math.max(min, parseFloat(sl.value) + delta));
+      sl.value = val;
+      lbl.textContent = decimals > 0 ? val.toFixed(decimals) : val.toLocaleString();
+      onUpdate(val);
+    };
+  }
+
+  document.getElementById('btn-temp-dn').addEventListener('click',
+    makeNudge('sl-temp', 'lbl-temp', -0.05, 2, v => { T = v; document.getElementById('stat-T').textContent = v.toFixed(2); }));
+  document.getElementById('btn-temp-up').addEventListener('click',
+    makeNudge('sl-temp', 'lbl-temp', +0.05, 2, v => { T = v; document.getElementById('stat-T').textContent = v.toFixed(2); }));
+
+  document.getElementById('btn-field-dn').addEventListener('click',
+    makeNudge('sl-field', 'lbl-field', -0.1, 2, v => { h = v; document.getElementById('stat-h').textContent = v.toFixed(2); }));
+  document.getElementById('btn-field-up').addEventListener('click',
+    makeNudge('sl-field', 'lbl-field', +0.1, 2, v => { h = v; document.getElementById('stat-h').textContent = v.toFixed(2); }));
+
+  document.getElementById('btn-steps-dn').addEventListener('click',
+    makeNudge('sl-steps', 'lbl-steps', -500, 0, v => { stepsPerFrame = Math.round(v); }));
+  document.getElementById('btn-steps-up').addEventListener('click',
+    makeNudge('sl-steps', 'lbl-steps', +500, 0, v => { stepsPerFrame = Math.round(v); }));
 
   // --- Start ---
   init();
