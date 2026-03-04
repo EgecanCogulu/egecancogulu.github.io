@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ising Model Simulation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f4f8;
+      --surface: #fff;
+      --accent: #0284c7;
+      --accent-dark: #0369a1;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 48px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+      max-width: 600px;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    header p .eq {
+      font-family: 'Georgia', serif;
+      font-style: italic;
+    }
+
+    .sim-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      width: 100%;
+      max-width: 580px;
+    }
+
+    canvas {
+      display: block;
+      width: 500px;
+      height: 500px;
+      image-rendering: pixelated;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .controls {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .control-row label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    .control-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 4px;
+      cursor: pointer;
+    }
+
+    .control-row .val {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+      width: 54px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .control-row select {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    button {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 7px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    #btn-toggle {
+      background: var(--accent);
+      color: #fff;
+      flex: 1;
+    }
+
+    #btn-toggle:hover { background: var(--accent-dark); }
+    #btn-toggle.paused { background: #16a34a; }
+    #btn-toggle.paused:hover { background: #15803d; }
+
+    #btn-reset {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    #btn-reset:hover { background: var(--border); }
+
+    .stats {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      gap: 20px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border);
+      width: 100%;
+    }
+
+    .stats span strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 32px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>2D Ising Model</h1>
+  <p>
+    Metropolis Monte Carlo simulation on a square lattice.<br>
+    <span class="eq">H = &minus;J &Sigma; s<sub>i</sub>s<sub>j</sub> &minus; h &Sigma; s<sub>i</sub></span>,
+    with J = 1 and periodic boundary conditions.
+    Critical temperature T<sub>c</sub> &asymp; 2.269.
+  </p>
+</header>
+
+<div class="sim-container">
+  <canvas id="canvas"></canvas>
+
+  <div class="controls">
+    <div class="control-row">
+      <label>Grid size</label>
+      <select id="sel-size">
+        <option value="50">50 &times; 50</option>
+        <option value="100" selected>100 &times; 100</option>
+        <option value="250">250 &times; 250</option>
+      </select>
+    </div>
+
+    <div class="control-row">
+      <label>Temperature T</label>
+      <input type="range" id="sl-temp" min="0.1" max="5.0" step="0.05" value="2.3">
+      <span class="val" id="lbl-temp">2.30</span>
+    </div>
+
+    <div class="control-row">
+      <label>Field h</label>
+      <input type="range" id="sl-field" min="-2.0" max="2.0" step="0.1" value="0.0">
+      <span class="val" id="lbl-field">0.00</span>
+    </div>
+
+    <div class="control-row">
+      <label>Steps / frame</label>
+      <input type="range" id="sl-steps" min="1" max="20000" step="1" value="1000">
+      <span class="val" id="lbl-steps">1000</span>
+    </div>
+
+    <div class="buttons">
+      <button id="btn-toggle">Pause</button>
+      <button id="btn-reset">Reset</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <span>T: <strong id="stat-T">2.30</strong></span>
+    <span>h: <strong id="stat-h">0.00</strong></span>
+    <span>Magnetization: <strong id="stat-mag">0.00</strong></span>
+    <span>Steps/sec: <strong id="stat-sps">--</strong></span>
+  </div>
+</div>
+
+<footer>
+  <a href="/">← Back to site</a>
+</footer>
+
+<script>
+  // --- State ---
+  let N = 100;
+  let T = 2.3;
+  let h = 0.0;
+  let stepsPerFrame = 1000;
+  let running = true;
+  let spins = null;
+  let animId = null;
+
+  // --- Performance tracking ---
+  let lastFrameTime = performance.now();
+  let stepAccum = 0;
+  let lastSpsUpdate = performance.now();
+
+  // --- Canvas setup ---
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  function setCanvasSize(n) {
+    canvas.width = n;
+    canvas.height = n;
+  }
+
+  // --- Init grid ---
+  function initGrid(n) {
+    const arr = new Int8Array(n * n);
+    for (let i = 0; i < arr.length; i++) {
+      arr[i] = Math.random() < 0.5 ? 1 : -1;
+    }
+    return arr;
+  }
+
+  // --- Metropolis step ---
+  // Precompute exp(-dE/T) table for the 10 possible dE values:
+  // dE = 2 * s * (J*sumNeighbors + h)
+  // sumNeighbors in {-4,-2,0,2,4}, s in {-1,1}
+  // We just compute inline — fast enough in JS
+
+  function step() {
+    const n = N;
+    const n2 = n * n;
+    const invT = 1.0 / T;
+    const s = spins;
+
+    for (let iter = 0; iter < stepsPerFrame; iter++) {
+      const idx = (Math.random() * n2) | 0;
+      const row = (idx / n) | 0;
+      const col = idx % n;
+
+      const spin = s[idx];
+
+      // Periodic neighbors
+      const up    = s[((row - 1 + n) % n) * n + col];
+      const down  = s[((row + 1)     % n) * n + col];
+      const left  = s[row * n + (col - 1 + n) % n];
+      const right = s[row * n + (col + 1)     % n];
+
+      const sumN = up + down + left + right;
+      const dE = 2.0 * spin * (sumN + h);
+
+      if (dE <= 0 || Math.random() < Math.exp(-dE * invT)) {
+        s[idx] = -spin;
+      }
+    }
+  }
+
+  // --- Render ---
+  const spinUpR = 224, spinUpG = 82,  spinUpB = 82;   // #e05252 red
+  const spinDnR = 74,  spinDnG = 144, spinDnB = 217;  // #4a90d9 blue
+
+  function render() {
+    const n = N;
+    const imageData = ctx.createImageData(n, n);
+    const data = imageData.data;
+    const s = spins;
+
+    for (let i = 0; i < n * n; i++) {
+      const base = i * 4;
+      if (s[i] === 1) {
+        data[base]     = spinUpR;
+        data[base + 1] = spinUpG;
+        data[base + 2] = spinUpB;
+      } else {
+        data[base]     = spinDnR;
+        data[base + 1] = spinDnG;
+        data[base + 2] = spinDnB;
+      }
+      data[base + 3] = 255;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  // --- Magnetization ---
+  function magnetization() {
+    let sum = 0;
+    for (let i = 0; i < spins.length; i++) sum += spins[i];
+    return sum / spins.length;
+  }
+
+  // --- Stats update ---
+  function updateStats() {
+    const now = performance.now();
+    const elapsed = now - lastSpsUpdate;
+    if (elapsed > 500) {
+      const sps = (stepAccum / elapsed * 1000) | 0;
+      document.getElementById('stat-sps').textContent = sps.toLocaleString();
+      stepAccum = 0;
+      lastSpsUpdate = now;
+    }
+    document.getElementById('stat-T').textContent = T.toFixed(2);
+    document.getElementById('stat-h').textContent = h.toFixed(2);
+    document.getElementById('stat-mag').textContent = magnetization().toFixed(3);
+  }
+
+  // --- Animation loop ---
+  function animate() {
+    if (!running) return;
+    step();
+    render();
+    stepAccum += stepsPerFrame;
+    updateStats();
+    animId = requestAnimationFrame(animate);
+  }
+
+  // --- Initialize ---
+  function init() {
+    setCanvasSize(N);
+    spins = initGrid(N);
+    render();
+    stepAccum = 0;
+    lastSpsUpdate = performance.now();
+  }
+
+  // --- Controls ---
+  const btnToggle = document.getElementById('btn-toggle');
+  const btnReset  = document.getElementById('btn-reset');
+
+  btnToggle.addEventListener('click', () => {
+    running = !running;
+    if (running) {
+      btnToggle.textContent = 'Pause';
+      btnToggle.classList.remove('paused');
+      animate();
+    } else {
+      btnToggle.textContent = 'Resume';
+      btnToggle.classList.add('paused');
+      if (animId) cancelAnimationFrame(animId);
+    }
+  });
+
+  btnReset.addEventListener('click', () => {
+    if (animId) cancelAnimationFrame(animId);
+    init();
+    if (running) animate();
+  });
+
+  document.getElementById('sel-size').addEventListener('change', function() {
+    N = parseInt(this.value);
+    if (animId) cancelAnimationFrame(animId);
+    init();
+    if (running) animate();
+  });
+
+  document.getElementById('sl-temp').addEventListener('input', function() {
+    T = parseFloat(this.value);
+    document.getElementById('lbl-temp').textContent = T.toFixed(2);
+    document.getElementById('stat-T').textContent = T.toFixed(2);
+  });
+
+  document.getElementById('sl-field').addEventListener('input', function() {
+    h = parseFloat(this.value);
+    document.getElementById('lbl-field').textContent = h.toFixed(2);
+    document.getElementById('stat-h').textContent = h.toFixed(2);
+  });
+
+  document.getElementById('sl-steps').addEventListener('input', function() {
+    stepsPerFrame = parseInt(this.value);
+    document.getElementById('lbl-steps').textContent = stepsPerFrame.toLocaleString();
+  });
+
+  // --- Start ---
+  init();
+  animate();
+</script>
+</body>
+</html>
