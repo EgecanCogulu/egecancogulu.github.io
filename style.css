@@ -754,12 +754,12 @@ nav {
 }
 
 .blog-card h3 a {
-  color: inherit;
+  color: var(--accent);
   transition: color var(--transition);
 }
 
 .blog-card h3 a:hover {
-  color: var(--accent);
+  color: var(--accent2);
   text-decoration: none;
 }
 
