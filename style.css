@@ -803,7 +803,7 @@ nav {
 
 #ising-preview {
   display: block;
-  width: 100%;
+  width: 50%;
   aspect-ratio: 1 / 1;
   image-rendering: pixelated;
 }
@@ -811,6 +811,7 @@ nav {
 .ising-preview-wrap {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .ising-preview-footer {
