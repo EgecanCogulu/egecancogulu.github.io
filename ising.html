@@ -147,7 +147,6 @@
     #btn-toggle {
       background: var(--accent);
       color: #fff;
-      flex: 1;
     }
 
     #btn-toggle:hover { background: var(--accent-dark); }
@@ -161,6 +160,14 @@
     }
 
     #btn-reset:hover { background: var(--border); }
+
+    #btn-tc {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    #btn-tc:hover { background: var(--border); }
 
     .step-btn {
       width: 22px;
@@ -261,6 +268,7 @@
     <div class="buttons">
       <button id="btn-toggle">Pause</button>
       <button id="btn-reset">Reset</button>
+      <button id="btn-tc">T<sub>c</sub></button>
     </div>
   </div>
 
@@ -414,6 +422,7 @@
   // --- Controls ---
   const btnToggle = document.getElementById('btn-toggle');
   const btnReset  = document.getElementById('btn-reset');
+  const btnTc     = document.getElementById('btn-tc');
 
   btnToggle.addEventListener('click', () => {
     running = !running;
@@ -441,6 +450,14 @@
     if (animId) cancelAnimationFrame(animId);
     init();
     if (running) animate();
+  });
+
+  btnTc.addEventListener('click', () => {
+    T = 2.269;
+    const slTemp = document.getElementById('sl-temp');
+    slTemp.value = T;
+    document.getElementById('lbl-temp').textContent = T.toFixed(2);
+    document.getElementById('stat-T').textContent = T.toFixed(2);
   });
 
   document.getElementById('sel-size').addEventListener('change', function() {
