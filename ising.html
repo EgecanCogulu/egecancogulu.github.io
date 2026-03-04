@@ -225,7 +225,7 @@
 
     <div class="control-row">
       <label>Field h</label>
-      <input type="range" id="sl-field" min="-2.0" max="2.0" step="0.1" value="0.0">
+      <input type="range" id="sl-field" min="-1.0" max="1.0" step="0.1" value="0.0">
       <span class="val" id="lbl-field">0.00</span>
     </div>
 
@@ -321,8 +321,8 @@
   }
 
   // --- Render ---
-  const spinUpR = 224, spinUpG = 82,  spinUpB = 82;   // #e05252 red
-  const spinDnR = 74,  spinDnG = 144, spinDnB = 217;  // #4a90d9 blue
+  const spinUpR = 253, spinUpG = 231, spinUpB = 37;   // #FDE725 cividis gold
+  const spinDnR = 68,  spinDnG = 1,   spinDnB = 84;   // #440154 cividis purple
 
   function render() {
     const n = N;
@@ -406,6 +406,15 @@
   });
 
   btnReset.addEventListener('click', () => {
+    // Reset controls to defaults
+    T = 1.0; h = 0.0; stepsPerFrame = 10000;
+    const slTemp  = document.getElementById('sl-temp');
+    const slField = document.getElementById('sl-field');
+    const slSteps = document.getElementById('sl-steps');
+    slTemp.value  = T;    document.getElementById('lbl-temp').textContent  = T.toFixed(2);
+    slField.value = h;    document.getElementById('lbl-field').textContent = h.toFixed(2);
+    slSteps.value = stepsPerFrame; document.getElementById('lbl-steps').textContent = stepsPerFrame.toLocaleString();
+
     if (animId) cancelAnimationFrame(animId);
     init();
     if (running) animate();
