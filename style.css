@@ -720,12 +720,21 @@ nav {
   flex-direction: column;
   gap: 16px;
   transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  position: relative;
+  cursor: pointer;
 }
 
 .blog-card:hover {
   border-color: rgba(2,132,199,0.25);
   transform: translateY(-4px);
   box-shadow: 0 16px 48px rgba(15,23,42,0.08);
+}
+
+/* Stretch the title link to cover the entire card */
+.blog-card h3 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
 }
 
 .blog-meta {
