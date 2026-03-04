@@ -293,6 +293,7 @@
 
 <div class="page-layout">
 
+  <!-- charts-panel commented out — re-enable when revisiting
   <div class="charts-panel">
     <div class="chart-card">
       <div class="chart-label">|Magnetization|</div>
@@ -307,6 +308,7 @@
       <canvas id="chart-e" width="236" height="100"></canvas>
     </div>
   </div>
+  -->
 
   <div class="sim-container">
     <canvas id="canvas"></canvas>
@@ -397,10 +399,10 @@
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
 
-  // --- Chart canvas contexts ---
-  const ctxMag = document.getElementById('chart-mag').getContext('2d');
-  const ctxChi = document.getElementById('chart-chi').getContext('2d');
-  const ctxE   = document.getElementById('chart-e').getContext('2d');
+  // --- Chart canvas contexts (commented out with charts panel) ---
+  // const ctxMag = document.getElementById('chart-mag').getContext('2d');
+  // const ctxChi = document.getElementById('chart-chi').getContext('2d');
+  // const ctxE   = document.getElementById('chart-e').getContext('2d');
 
   function setCanvasSize(n) {
     canvas.width = n;
@@ -583,19 +585,17 @@
     render();
     stepAccum += stepsPerFrame;
 
-    // Collect chart data
-    const absMag = Math.abs(magnetization());
-    pushMWindow(absMag);
-    bufM[bufHead]   = absMag;
-    bufChi[bufHead] = susceptibility();
-    bufE[bufHead]   = energyPerSpin();
-    bufHead = (bufHead + 1) % HIST;
-    if (bufCount < HIST) bufCount++;
-
-    // Draw charts
-    drawChart(ctxMag, bufM, '#0284c7', v => v.toFixed(3));
-    drawChart(ctxChi, bufChi, '#d97706', v => v.toFixed(1));
-    drawChart(ctxE,   bufE,   '#16a34a', v => v.toFixed(3));
+    // Chart data collection + drawing commented out with charts panel
+    // const absMag = Math.abs(magnetization());
+    // pushMWindow(absMag);
+    // bufM[bufHead]   = absMag;
+    // bufChi[bufHead] = susceptibility();
+    // bufE[bufHead]   = energyPerSpin();
+    // bufHead = (bufHead + 1) % HIST;
+    // if (bufCount < HIST) bufCount++;
+    // drawChart(ctxMag, bufM, '#0284c7', v => v.toFixed(3));
+    // drawChart(ctxChi, bufChi, '#d97706', v => v.toFixed(1));
+    // drawChart(ctxE,   bufE,   '#16a34a', v => v.toFixed(3));
 
     updateStats();
     animId = requestAnimationFrame(animate);
