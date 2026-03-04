@@ -415,14 +415,14 @@
   <div class="container">
     <p class="section-label">Interactive</p>
     <h2 class="section-title">Ising Model Simulation</h2>
-    <p class="section-subtitle">An interactive simulation of the 2D Ising model: a lattice of spins that spontaneously orders below a critical temperature. Press play to restart.</p>
+    <p class="section-subtitle">A live simulation of the 2D Ising model running in your browser: a lattice of spins that spontaneously orders below a critical temperature.</p>
 
-    <div class="simulation-wrap fade-in">
-      <iframe
-        src="https://egecancogulu.github.io/images/ising.html"
-        title="Ising model simulation"
-        loading="lazy"
-      ></iframe>
+    <div class="simulation-wrap fade-in ising-preview-wrap">
+      <canvas id="ising-preview"></canvas>
+      <div class="ising-preview-footer">
+        <span class="ising-preview-caption">T = 2.3 (near T<sub>c</sub>) &nbsp;&middot;&nbsp; 150&times;150 lattice &nbsp;&middot;&nbsp; live Metropolis MC</span>
+        <a href="ising.html" class="btn-ising-full">Try interactive version &rarr;</a>
+      </div>
     </div>
   </div>
 </section>
@@ -617,6 +617,48 @@
       ? 'rgba(240,244,248,0.97)'
       : 'rgba(240,244,248,0.85)';
   }, { passive: true });
+
+  // Ising preview animation
+  (function () {
+    const N = 150, T = 2.3, h = 0, stepsPerFrame = 3000;
+    const canvas = document.getElementById('ising-preview');
+    canvas.width = N; canvas.height = N;
+    const ctx = canvas.getContext('2d');
+    const spins = new Int8Array(N * N);
+    for (let i = 0; i < spins.length; i++) spins[i] = Math.random() < 0.5 ? 1 : -1;
+    let animId = null;
+
+    function step() {
+      const invT = 1 / T, n2 = N * N;
+      for (let k = 0; k < stepsPerFrame; k++) {
+        const idx = (Math.random() * n2) | 0;
+        const row = (idx / N) | 0, col = idx % N;
+        const spin = spins[idx];
+        const sumN = spins[((row-1+N)%N)*N+col] + spins[((row+1)%N)*N+col]
+                   + spins[row*N+(col-1+N)%N]   + spins[row*N+(col+1)%N];
+        const dE = 2 * spin * (sumN + h);
+        if (dE <= 0 || Math.random() < Math.exp(-dE * invT)) spins[idx] = -spin;
+      }
+    }
+
+    function render() {
+      const img = ctx.createImageData(N, N), d = img.data;
+      for (let i = 0; i < N * N; i++) {
+        const b = i * 4;
+        if (spins[i] === 1) { d[b]=253; d[b+1]=231; d[b+2]=37; }
+        else                 { d[b]=68;  d[b+1]=1;   d[b+2]=84; }
+        d[b+3] = 255;
+      }
+      ctx.putImageData(img, 0, 0);
+    }
+
+    function loop() { step(); render(); animId = requestAnimationFrame(loop); }
+
+    new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { if (!animId) loop(); }
+      else { cancelAnimationFrame(animId); animId = null; }
+    }, { threshold: 0.1 }).observe(canvas);
+  })();
 
   // Hamburger menu
   const burger = document.querySelector('.nav-burger');
