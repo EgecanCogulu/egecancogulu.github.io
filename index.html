@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script>
+    MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] } };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
 </head>
 <body>
 
@@ -437,9 +441,7 @@
     <p class="section-subtitle">A single magnetic moment evolving on the Bloch sphere under the Landau-Lifshitz-Gilbert-Slonczewski (LLGS) equation. Explore precession, damped relaxation, spin-transfer auto-oscillation, and field-driven switching.</p>
 
     <div class="simulation-wrap fade-in" style="padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-      <span style="font-size: 0.82rem; color: var(--muted); font-family: Georgia, serif; font-style: italic;">
-        d<b>m</b>/dt = &minus;(<b>m</b> &times; <b>H</b><sub>eff</sub> + &alpha; <b>m</b> &times; (<b>m</b> &times; <b>H</b><sub>eff</sub>)) / (1+&alpha;&sup2;) &nbsp;+&nbsp; &tau;<sub>ad</sub> <b>m</b> &times; (<b>m</b> &times; p&#x302;) / (1+&alpha;&sup2;)
-      </span>
+      \[\frac{d\mathbf{m}}{dt} = -\frac{\mathbf{m} \times \mathbf{H}_\text{eff} + \alpha\,\mathbf{m} \times (\mathbf{m} \times \mathbf{H}_\text{eff})}{1+\alpha^2} + \frac{\tau_\text{ad}}{1+\alpha^2}\,\mathbf{m} \times \!\left(\mathbf{m} \times \hat{p}\right)\]
       <a href="macrospin.html" class="btn-ising-full">Try interactive version &rarr;</a>
     </div>
   </div>
