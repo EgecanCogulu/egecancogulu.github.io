@@ -810,8 +810,8 @@ nav {
 
 #macrospin-preview {
   display: block;
-  width: 520px;
-  height: 300px;
+  width: 65%;
+  aspect-ratio: 600 / 346;
 }
 
 .ising-preview-wrap {

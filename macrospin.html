@@ -434,6 +434,7 @@ let animId  = null;
 // --- Three.js setup ---
 const threeCanvas = document.getElementById('three-canvas');
 const renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(450, 450);
 renderer.setClearColor(0xffffff);
 
