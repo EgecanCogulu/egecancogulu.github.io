@@ -440,9 +440,16 @@
     <h2 class="section-title">Macrospin Simulation</h2>
     <p class="section-subtitle">A single magnetic moment evolving on the Bloch sphere under the Landau-Lifshitz-Gilbert-Slonczewski (LLGS) equation. Explore precession, damped relaxation, spin-transfer auto-oscillation, and field-driven switching.</p>
 
-    <div class="simulation-wrap fade-in" style="padding: 28px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+    <div style="text-align:center; margin: 8px 0 20px;">
       \[\frac{d\mathbf{m}}{dt} = -\frac{\mathbf{m} \times \mathbf{H}_\text{eff} + \alpha\,\mathbf{m} \times (\mathbf{m} \times \mathbf{H}_\text{eff})}{1+\alpha^2} + \frac{\tau_\text{ad}}{1+\alpha^2}\,\mathbf{m} \times \!\left(\mathbf{m} \times \hat{p}\right)\]
-      <a href="macrospin.html" class="btn-ising-full">Try interactive version &rarr;</a>
+    </div>
+
+    <div class="simulation-wrap fade-in ising-preview-wrap">
+      <canvas id="macrospin-preview" style="display:block;width:100%;image-rendering:auto;"></canvas>
+      <div class="ising-preview-footer">
+        <span class="ising-preview-caption">Auto-oscillation &nbsp;&middot;&nbsp; &alpha; = 0.02, &tau;<sub>ad</sub> = 0.05, H<sub>ani</sub> = 1 &nbsp;&middot;&nbsp; live LLGS</span>
+        <a href="macrospin.html" class="btn-ising-full">Try interactive version &rarr;</a>
+      </div>
     </div>
   </div>
 </section>
@@ -676,6 +683,148 @@
 
     new IntersectionObserver(function(entries) {
       if (entries[0].isIntersecting) { if (!animId) loop(); }
+      else { cancelAnimationFrame(animId); animId = null; }
+    }, { threshold: 0.1 }).observe(canvas);
+  })();
+
+  // Macrospin preview animation — auto-oscillation (LLGS, isometric Bloch sphere)
+  (function () {
+    const W = 500, H = 280, R = 100;
+    const cx = W / 2, cy = H / 2;
+    const S2 = Math.SQRT2, S6 = Math.sqrt(6), S3 = Math.sqrt(3);
+
+    const canvas = document.getElementById('macrospin-preview');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    // Isometric projection from camera at (1,1,1), z-up
+    function proj(mx, my, mz) {
+      return [cx + (mx - my) / S2 * R,
+              cy - (2 * mz - mx - my) / S6 * R];
+    }
+
+    // Draw sphere wireframe (circle + latitude ellipses + z-axis)
+    function drawWire() {
+      ctx.strokeStyle = '#d1d5db';
+      ctx.lineWidth = 0.8;
+
+      // Sphere silhouette
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Latitude rings at z = -0.5, 0, +0.5
+      for (const h of [-0.5, 0, 0.5]) {
+        const r  = Math.sqrt(1 - h * h);
+        const ey = cy - 2 * h / S6 * R;          // ellipse centre-y
+        ctx.beginPath();
+        ctx.ellipse(cx, ey, r * R, r * R / S3, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Z-axis
+      const [xt, yt] = proj(0, 0,  1);
+      const [xb, yb] = proj(0, 0, -1);
+      ctx.beginPath();
+      ctx.moveTo(xt, yt); ctx.lineTo(xb, yb);
+      ctx.stroke();
+
+      // Pole labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('+z', xt, yt - 6);
+      ctx.fillText('−z', xb, yb + 14);
+    }
+
+    // Physics — auto-oscillation preset
+    const ALPHA = 0.02, HZ = 0.3, HANI = 1.0, TAD = 0.05;
+    const C = 1 / (1 + ALPHA * ALPHA);
+
+    function cross(a, b) {
+      return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+    }
+    function add3(a, b)   { return [a[0]+b[0], a[1]+b[1], a[2]+b[2]]; }
+    function scale3(a, s) { return [a[0]*s, a[1]*s, a[2]*s]; }
+
+    function dmdt(m) {
+      const H     = [0, 0, HZ + HANI * m[2]];
+      const mxH   = cross(m, H);
+      const mxmxH = cross(m, mxH);
+      const mxP   = cross(m, [0, 0, 1]);           // p̂ = +z
+      const mxmxP = cross(m, mxP);
+      return add3(add3(scale3(mxH, -C), scale3(mxmxH, -ALPHA * C)), scale3(mxmxP, TAD * C));
+    }
+
+    function rk4(m, dt) {
+      const k1 = dmdt(m);
+      const k2 = dmdt(add3(m, scale3(k1, dt * 0.5)));
+      const k3 = dmdt(add3(m, scale3(k2, dt * 0.5)));
+      const k4 = dmdt(add3(m, scale3(k3, dt)));
+      const n  = [
+        m[0] + dt/6*(k1[0]+2*k2[0]+2*k3[0]+k4[0]),
+        m[1] + dt/6*(k1[1]+2*k2[1]+2*k3[1]+k4[1]),
+        m[2] + dt/6*(k1[2]+2*k2[2]+2*k3[2]+k4[2])
+      ];
+      const l = Math.sqrt(n[0]*n[0]+n[1]*n[1]+n[2]*n[2]);
+      return [n[0]/l, n[1]/l, n[2]/l];
+    }
+
+    // Trail ring buffer
+    const TRAIL = 600;
+    const tx = new Float32Array(TRAIL), ty = new Float32Array(TRAIL);
+    let tHead = 0, tCount = 0, simTime = 0;
+    let m = [0, 0, 1];
+
+    function reset() {
+      const th = 10 * Math.PI / 180;
+      m = [Math.sin(th), 0, Math.cos(th)];
+      simTime = 0; tHead = 0; tCount = 0;
+    }
+
+    let animId = null;
+
+    function frame() {
+      for (let i = 0; i < 15; i++) { m = rk4(m, 0.01); simTime += 0.01; }
+
+      const [px, py] = proj(m[0], m[1], m[2]);
+      tx[tHead] = px; ty[tHead] = py;
+      tHead = (tHead + 1) % TRAIL;
+      if (tCount < TRAIL) tCount++;
+
+      if (simTime > 55) reset();   // loop to show transient again
+
+      // Draw
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+      drawWire();
+
+      // Trail (fade older points)
+      if (tCount > 1) {
+        for (let i = 1; i < tCount; i++) {
+          const alpha = i / tCount;
+          const a = (tHead - tCount + i + TRAIL) % TRAIL;
+          const b = (tHead - tCount + i - 1 + TRAIL) % TRAIL;
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(2,132,199,${0.15 + 0.55 * alpha})`;
+          ctx.lineWidth = 1.2 + alpha * 0.6;
+          ctx.moveTo(tx[b], ty[b]);
+          ctx.lineTo(tx[a], ty[a]);
+          ctx.stroke();
+        }
+      }
+
+      // Current m dot
+      ctx.beginPath();
+      ctx.arc(px, py, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#0284c7';
+      ctx.fill();
+
+      animId = requestAnimationFrame(frame);
+    }
+
+    new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) { if (!animId) { reset(); frame(); } }
       else { cancelAnimationFrame(animId); animId = null; }
     }, { threshold: 0.1 }).observe(canvas);
   })();
