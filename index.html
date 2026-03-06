@@ -447,7 +447,7 @@
     <div class="simulation-wrap fade-in ising-preview-wrap">
       <canvas id="macrospin-preview" style="display:block;width:100%;image-rendering:auto;"></canvas>
       <div class="ising-preview-footer">
-        <span class="ising-preview-caption">Auto-oscillation &nbsp;&middot;&nbsp; &alpha; = 0.02, &tau;<sub>ad</sub> = 0.05, H<sub>ani</sub> = 1 &nbsp;&middot;&nbsp; live LLGS</span>
+        <span class="ising-preview-caption">Stoner&ndash;Wohlfarth switching &nbsp;&middot;&nbsp; &alpha; = 0.15, H<sub>z</sub> = &minus;1.5 &nbsp;&middot;&nbsp; live LLGS</span>
         <a href="macrospin.html" class="btn-ising-full">Try interactive version &rarr;</a>
       </div>
     </div>
@@ -687,9 +687,9 @@
     }, { threshold: 0.1 }).observe(canvas);
   })();
 
-  // Macrospin preview animation — auto-oscillation (LLGS, isometric Bloch sphere)
+  // Macrospin preview animation — switching (LLGS, isometric Bloch sphere)
   (function () {
-    const W = 500, H = 280, R = 100;
+    const W = 400, H = 230, R = 82;
     const cx = W / 2, cy = H / 2;
     const S2 = Math.SQRT2, S6 = Math.sqrt(6), S3 = Math.sqrt(3);
 
@@ -737,8 +737,8 @@
       ctx.fillText('−z', xb, yb + 14);
     }
 
-    // Physics — auto-oscillation preset
-    const ALPHA = 0.02, HZ = 0.3, HANI = 1.0, TAD = 0.05;
+    // Physics — switching preset (reversed field overcomes anisotropy)
+    const ALPHA = 0.15, HZ = -1.5, HANI = 1.0;
     const C = 1 / (1 + ALPHA * ALPHA);
 
     function cross(a, b) {
@@ -751,9 +751,7 @@
       const H     = [0, 0, HZ + HANI * m[2]];
       const mxH   = cross(m, H);
       const mxmxH = cross(m, mxH);
-      const mxP   = cross(m, [0, 0, 1]);           // p̂ = +z
-      const mxmxP = cross(m, mxP);
-      return add3(add3(scale3(mxH, -C), scale3(mxmxH, -ALPHA * C)), scale3(mxmxP, TAD * C));
+      return add3(scale3(mxH, -C), scale3(mxmxH, -ALPHA * C));
     }
 
     function rk4(m, dt) {
@@ -792,7 +790,7 @@
       tHead = (tHead + 1) % TRAIL;
       if (tCount < TRAIL) tCount++;
 
-      if (simTime > 55) reset();   // loop to show transient again
+      if (simTime > 90) reset();   // loop: show switch + settling at −z, then restart
 
       // Draw
       ctx.fillStyle = '#ffffff';
