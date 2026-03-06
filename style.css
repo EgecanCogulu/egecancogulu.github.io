@@ -808,6 +808,12 @@ nav {
   image-rendering: pixelated;
 }
 
+#macrospin-preview {
+  display: block;
+  width: 340px;
+  height: 196px;
+}
+
 .ising-preview-wrap {
   display: flex;
   flex-direction: column;

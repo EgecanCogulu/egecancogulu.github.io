@@ -445,7 +445,7 @@
     </div>
 
     <div class="simulation-wrap fade-in ising-preview-wrap">
-      <canvas id="macrospin-preview" style="display:block;width:100%;image-rendering:auto;"></canvas>
+      <canvas id="macrospin-preview"></canvas>
       <div class="ising-preview-footer">
         <span class="ising-preview-caption">Stoner&ndash;Wohlfarth switching &nbsp;&middot;&nbsp; &alpha; = 0.15, H<sub>z</sub> = &minus;1.5 &nbsp;&middot;&nbsp; live LLGS</span>
         <a href="macrospin.html" class="btn-ising-full">Try interactive version &rarr;</a>
@@ -694,8 +694,10 @@
     const S2 = Math.SQRT2, S6 = Math.sqrt(6), S3 = Math.sqrt(3);
 
     const canvas = document.getElementById('macrospin-preview');
-    canvas.width = W; canvas.height = H;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = W * dpr; canvas.height = H * dpr;
     const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
 
     // Isometric projection from camera at (1,1,1), z-up
     function proj(mx, my, mz) {
