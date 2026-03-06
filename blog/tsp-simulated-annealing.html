@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Traveling Salesman Problem and Simulated Annealing — Ege Cogulu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$$', '$$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        tags: 'ams',
+        processEscapes: true,
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    .prose table {
+      border-collapse: collapse;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+    }
+    .prose th, .prose td {
+      border: 1px solid var(--border);
+      padding: 0.45rem 1.1rem;
+      text-align: left;
+    }
+    .prose th {
+      background: #f8fafc;
+      font-weight: 600;
+    }
+    .sim-box {
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    #tsp-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #0f172a;
+    }
+    .sim-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.25rem;
+      padding: 0.55rem 1rem;
+      background: #1e293b;
+      border-top: 1px solid #334155;
+      font-size: 0.77rem;
+      color: #e2e8f0;
+    }
+    .sim-stats strong { color: #e2e8f0; }
+    .sim-stats .converged-label { color: #4ade80; font-weight: 600; }
+    .sim-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem 1rem;
+      background: #1e293b;
+      border-top: 1px solid #334155;
+    }
+    .sim-ctrl-row { display: flex; flex-direction: column; gap: 4px; }
+    .sim-ctrl-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #e2e8f0;
+    }
+    .sim-ctrl-header strong { color: #e2e8f0; }
+    .sim-ctrl-track {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sim-ctrl-track input[type="range"] {
+      flex: 1;
+      accent-color: #0284c7;
+      cursor: pointer;
+    }
+    .sim-inc {
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+      border-radius: 4px;
+      border: 1px solid #475569;
+      background: #334155;
+      color: #e2e8f0;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sim-inc:hover { background: #475569; }
+    .sim-btns {
+      display: flex;
+      gap: 0.4rem;
+      padding-top: 0.25rem;
+    }
+    .sim-btn {
+      padding: 0.32rem 0.9rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.77rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    #btn-run { background: #0284c7; color: #fff; min-width: 4rem; }
+    #btn-run:hover { background: #0369a1; }
+    #btn-reset { background: #475569; color: #e2e8f0; }
+    #btn-reset:hover { background: #64748b; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Home</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-dropdown">
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#blog">Blog</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../cv.html" class="btn-nav">Resume</a>
+</div>
+
+<div class="container post-layout">
+
+  <div class="post-header">
+    <p class="section-label">Blog</p>
+    <h1 class="post-title">The Traveling Salesman Problem and Simulated Annealing</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">March 5, 2026</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Algorithms</span>
+        <span class="blog-tag">Optimization</span>
+        <span class="blog-tag">Simulation</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+
+    <p>
+      The Traveling Salesman Problem is one of those deceptively simple questions. Give a
+      salesman a list of cities. He needs to visit each one exactly once and return home. What's
+      the shortest route? That's it. Yet despite nearly a century of effort, nobody knows how to
+      solve it efficiently for the general case, and most researchers doubt they ever will.
+    </p>
+
+    <h2>The Problem</h2>
+
+    <p>
+      Formally: given N cities with pairwise distances, find the shortest Hamiltonian cycle,
+      a closed path that visits each city exactly once. For a tour $$\pi$$ over cities
+      $$1, 2, \ldots, N$$, the total distance is:
+    </p>
+
+    \[L(\pi) = \sum_{i=1}^{N} d\!\left(\pi(i),\; \pi\!\left((i \bmod N) + 1\right)\right)\]
+
+    <p>
+      The goal is $$\pi^* = \arg\min_\pi L(\pi)$$.
+    </p>
+
+    <p>
+      TSP appears in many practical contexts: delivery routing, drilling holes in circuit boards,
+      scheduling telescope observations, even gene sequencing. It's a clean model for any problem
+      where you need to find an efficient ordering over a fixed set of items.
+    </p>
+
+    <h2>How Hard Is It?</h2>
+
+    <p>
+      For symmetric TSP (where the distance from A to B equals B to A), there are $$(N-1)!/2$$
+      distinct tours. For just 20 cities, that's around 60 trillion possibilities.
+    </p>
+
+    <table>
+      <thead><tr><th>Cities (N)</th><th>Distinct tours</th></tr></thead>
+      <tbody>
+        <tr><td>10</td><td>181,440</td></tr>
+        <tr><td>15</td><td>~43 billion</td></tr>
+        <tr><td>20</td><td>~60 trillion</td></tr>
+        <tr><td>30</td><td>~4.4 &times; 10<sup>30</sup></td></tr>
+        <tr><td>50</td><td>~1.5 &times; 10<sup>62</sup></td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      TSP is NP-hard. The decision version, "does a tour shorter than K exist?", is NP-complete.
+      A polynomial-time algorithm for TSP would prove P=NP, one of the biggest open problems in
+      mathematics. Most experts consider this unlikely.
+    </p>
+
+    <p>
+      The best known exact algorithm is Held-Karp dynamic programming (1962), which runs in
+      $$O(2^N \cdot N^2)$$ time. Exponential, but far better than brute force. It's practical up
+      to roughly 20&ndash;25 cities. Beyond that, exact methods become too slow for general instances.
+    </p>
+
+    <p>
+      The best practical solvers today, like the Concorde TSP solver, can handle instances with
+      tens of thousands of cities to proven optimality. But they rely on deep problem-specific
+      structure and decades of algorithmic refinement. The general problem is genuinely hard.
+    </p>
+
+    <h2>Simulated Annealing</h2>
+
+    <p>
+      Since exact methods don't scale, we turn to heuristics. Simulated annealing is one of the
+      oldest and most intuitive.
+    </p>
+
+    <p>
+      The name comes from metallurgy. Heat a metal to high temperature and cool it slowly, and the
+      atoms settle into a low-energy crystal structure. Cool it too fast and you get an amorphous
+      solid: atoms frozen in a locally stable but globally suboptimal arrangement. The slow, controlled
+      cooling allows the system to escape local minima.
+    </p>
+
+    <p>The algorithm works as follows:</p>
+
+    <ol>
+      <li>Start with a random tour.</li>
+      <li>Propose a random modification (a "move").</li>
+      <li>If the new tour is shorter, accept it.</li>
+      <li>If it's longer by $$\Delta L$$, accept it anyway with probability $$e^{-\Delta L / T}$$.</li>
+      <li>Decrease the temperature $$T$$ and repeat.</li>
+    </ol>
+
+    <p>
+      Step 4 is what sets SA apart from simple hill climbing. At high $$T$$, the acceptance
+      probability $$e^{-\Delta L / T}$$ is close to 1 for moderate $$\Delta L$$, so the algorithm
+      freely accepts worse solutions. This lets it explore broadly and escape local optima. As $$T$$
+      drops, the probability falls toward zero for worsening moves, and the algorithm gradually
+      commits to the best region it has found.
+    </p>
+
+    <h3>The 2-opt move</h3>
+
+    <p>
+      For TSP, a natural neighborhood move is the <strong>2-opt swap</strong>: pick two edges in the
+      current tour, remove them, and reconnect the resulting segments in the only other possible way.
+      This is equivalent to reversing the order of cities between the two cut points.
+    </p>
+
+    <p>
+      The change in tour length from a 2-opt move only requires four pairwise distances, so it takes
+      O(1) to evaluate. If we remove edges $$(i, i{+}1)$$ and $$(j, j{+}1)$$ and add edges
+      $$(i, j)$$ and $$(i{+}1, j{+}1)$$:
+    </p>
+
+    \[\Delta L = d(i,\,j) + d(i{+}1,\,j{+}1) - d(i,\,i{+}1) - d(j,\,j{+}1)\]
+
+    <p>
+      If $$\Delta L < 0$$, the move improves the tour and is always accepted. Otherwise, we apply
+      the Metropolis criterion from step 4.
+    </p>
+
+    <h2>The Cooling Schedule</h2>
+
+    <p>
+      The most common approach is geometric cooling: multiply $$T$$ by a fixed factor
+      $$\alpha \in (0, 1)$$ at each step.
+    </p>
+
+    \[T_{k+1} = \alpha \cdot T_k\]
+
+    <p>
+      With $$\alpha = 0.995$$, the temperature halves every ~138 steps. With $$\alpha = 0.9999$$,
+      it takes ~6,930 steps. Slower cooling gives more exploration at each temperature and generally
+      produces better solutions, but takes longer to converge.
+    </p>
+
+    <p>
+      The starting temperature $$T_0$$ matters too. Set it too low and you get greedy descent: only
+      improvements are accepted and the algorithm gets stuck in the first local optimum it finds. Too
+      high and the early iterations are a random walk. A reasonable rule of thumb is to set $$T_0$$
+      so that a typical worsening move has roughly a 50% acceptance probability at the start.
+    </p>
+
+    <h2>Try It Yourself</h2>
+
+    <p>
+      The simulation below runs simulated annealing on a set of randomly placed cities.
+      Hit <strong>Run</strong> to start and <strong>Pause</strong> to stop. <strong>Reset</strong>
+      generates a new layout using the current N. Changes to N and $$T_0$$ take effect on the next
+      reset; $$\alpha$$ and Speed apply immediately.
+    </p>
+
+    <p>A few things to try:</p>
+    <ul>
+      <li>Watch the tour at high temperature: it often gets longer before improving, as the algorithm explores.</li>
+      <li>Lower $$\alpha$$ toward 0.990 (faster cooling) and see if the final tour quality suffers.</li>
+      <li>Set N to 8&ndash;10 and run several times. The algorithm consistently finds near-optimal tours at small scale.</li>
+      <li>Raise $$T_0$$ to 5000 and watch how long the tour wanders before settling into a good solution.</li>
+    </ul>
+
+    <div class="sim-box">
+      <canvas id="tsp-canvas" width="600" height="380"></canvas>
+      <div class="sim-stats">
+        <span>Iteration: <strong id="stat-iter">0</strong></span>
+        <span>Length: <strong id="stat-len">&mdash;</strong></span>
+        <span>Best: <strong id="stat-best">&mdash;</strong></span>
+        <span>Temp: <strong id="stat-temp">&mdash;</strong></span>
+        <span id="stat-status"></span>
+      </div>
+      <div class="sim-controls">
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Cities (N)</span>
+            <strong id="val-n">20</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" id="ctrl-n-minus">&#8722;</button>
+            <input type="range" id="ctrl-n" min="5" max="60" value="20" step="1">
+            <button class="sim-inc" id="ctrl-n-plus">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>T<sub>0</sub></span>
+            <strong id="val-t0">1000</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" id="ctrl-t0-minus">&#8722;</button>
+            <input type="range" id="ctrl-t0" min="100" max="5000" value="1000" step="100">
+            <button class="sim-inc" id="ctrl-t0-plus">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>&#945;</span>
+            <strong id="val-alpha">0.9950</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" id="ctrl-alpha-minus">&#8722;</button>
+            <input type="range" id="ctrl-alpha" min="0.9900" max="0.9999" value="0.9950" step="0.0001">
+            <button class="sim-inc" id="ctrl-alpha-plus">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Speed (iter/frame)</span>
+            <strong id="val-speed">10</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" id="ctrl-speed-minus">&#8722;</button>
+            <input type="range" id="ctrl-speed" min="1" max="300" value="10" step="1">
+            <button class="sim-inc" id="ctrl-speed-plus">+</button>
+          </div>
+        </div>
+        <div class="sim-btns">
+          <button class="sim-btn" id="btn-run">Run</button>
+          <button class="sim-btn" id="btn-reset">Reset</button>
+        </div>
+      </div>
+    </div>
+
+  </article>
+
+  <aside class="post-toc">
+    <div class="toc-label">In this post</div>
+    <ul id="toc-list"></ul>
+  </aside>
+  </div>
+
+  <div class="post-nav">
+    <a href="coin-flips.html" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous: Bayesian vs. Frequentist Approach
+    </a>
+    <a href="../index.html#blog" class="btn btn-secondary">
+      All posts
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  // Nav scroll + burger
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(240,244,248,0.97)'
+      : 'rgba(240,244,248,0.85)';
+  }, { passive: true });
+
+  const burger = document.querySelector('.nav-burger');
+  burger.addEventListener('click', () => {
+    const open = document.body.classList.toggle('nav-open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('.nav-dropdown a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.body.classList.remove('nav-open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // TOC
+  const headings = document.querySelectorAll('.prose h2');
+  const tocList = document.getElementById('toc-list');
+  headings.forEach((h, i) => {
+    h.id = 'section-' + i;
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#section-' + i;
+    a.textContent = h.textContent;
+    li.appendChild(a);
+    tocList.appendChild(li);
+  });
+  const tocLinks = tocList.querySelectorAll('a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    headings.forEach(h => {
+      if (window.scrollY >= h.offsetTop - 100) current = h.id;
+    });
+    tocLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+
+  // ---- Simulation ----
+  const canvas = document.getElementById('tsp-canvas');
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width, CH = canvas.height;
+
+  let cities = [], tour = [], bestTour = [], bestLength = Infinity;
+  let currentLength = 0, temperature = 1000, iteration = 0;
+  let running = false, animId = null;
+
+  function dist(a, b) {
+    return Math.hypot(b.x - a.x, b.y - a.y);
+  }
+
+  function tourLen(t) {
+    let s = 0;
+    for (let i = 0; i < t.length; i++)
+      s += dist(cities[t[i]], cities[t[(i + 1) % t.length]]);
+    return s;
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function init() {
+    const n = +document.getElementById('ctrl-n').value;
+    const t0 = +document.getElementById('ctrl-t0').value;
+    const pad = 40;
+    cities = Array.from({ length: n }, () => ({
+      x: pad + Math.random() * (CW - 2 * pad),
+      y: pad + Math.random() * (CH - 2 * pad),
+    }));
+    tour = shuffle(Array.from({ length: n }, (_, i) => i));
+    currentLength = tourLen(tour);
+    bestTour = tour.slice();
+    bestLength = currentLength;
+    temperature = t0;
+    iteration = 0;
+    draw();
+    updateStats();
+  }
+
+  function twoOptDelta(i, j) {
+    const n = tour.length;
+    const a = cities[tour[i]];
+    const b = cities[tour[(i + 1) % n]];
+    const c = cities[tour[j]];
+    const e = cities[tour[(j + 1) % n]];
+    return dist(a, c) + dist(b, e) - dist(a, b) - dist(c, e);
+  }
+
+  function step() {
+    const n = tour.length;
+    if (n < 4) return;
+
+    // Pick two distinct indices i < j with j - i >= 2
+    let i = Math.floor(Math.random() * n);
+    let j = Math.floor(Math.random() * (n - 1));
+    if (j >= i) j++;
+    if (i > j) { const tmp = i; i = j; j = tmp; }
+    if (j - i <= 1) return;
+
+    const delta = twoOptDelta(i, j);
+    if (delta < 0 || Math.random() < Math.exp(-delta / temperature)) {
+      // Reverse segment tour[i+1 .. j]
+      let l = i + 1, r = j;
+      while (l < r) {
+        const tmp = tour[l]; tour[l] = tour[r]; tour[r] = tmp;
+        l++; r--;
+      }
+      currentLength += delta;
+      if (currentLength < bestLength) {
+        bestLength = currentLength;
+        bestTour = tour.slice();
+      }
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(0, 0, CW, CH);
+
+    if (tour.length > 1) {
+      // Best tour (subtle)
+      if (bestLength < currentLength - 1) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+        ctx.lineWidth = 1;
+        bestTour.forEach((idx, i) => {
+          const c = cities[idx];
+          i === 0 ? ctx.moveTo(c.x, c.y) : ctx.lineTo(c.x, c.y);
+        });
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      // Current tour
+      ctx.beginPath();
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 1.5;
+      tour.forEach((idx, i) => {
+        const c = cities[idx];
+        i === 0 ? ctx.moveTo(c.x, c.y) : ctx.lineTo(c.x, c.y);
+      });
+      ctx.closePath();
+      ctx.stroke();
+    }
+
+    // Cities
+    cities.forEach((c, idx) => {
+      ctx.beginPath();
+      const isStart = idx === tour[0];
+      ctx.arc(c.x, c.y, isStart ? 6 : 4, 0, 2 * Math.PI);
+      ctx.fillStyle = isStart ? '#f59e0b' : '#f1f5f9';
+      ctx.fill();
+    });
+  }
+
+  function updateStats() {
+    document.getElementById('stat-iter').textContent = iteration.toLocaleString();
+    document.getElementById('stat-len').textContent = Math.round(currentLength);
+    document.getElementById('stat-best').textContent = Math.round(bestLength);
+    const tempVal = temperature < 0.01 ? '<0.01' : temperature.toFixed(temperature < 10 ? 2 : 0);
+    document.getElementById('stat-temp').textContent = tempVal;
+    const statusEl = document.getElementById('stat-status');
+    if (temperature < 0.5) {
+      statusEl.innerHTML = '<span class="converged-label">converged</span>';
+    } else {
+      statusEl.textContent = '';
+    }
+  }
+
+  function loop() {
+    if (!running) return;
+    const speed = +document.getElementById('ctrl-speed').value;
+    const alpha = +document.getElementById('ctrl-alpha').value;
+    for (let i = 0; i < speed; i++) {
+      step();
+      temperature *= alpha;
+      iteration++;
+    }
+    draw();
+    updateStats();
+    animId = requestAnimationFrame(loop);
+  }
+
+  document.getElementById('btn-run').addEventListener('click', function () {
+    running = !running;
+    this.textContent = running ? 'Pause' : 'Run';
+    if (running) loop();
+  });
+
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    running = false;
+    cancelAnimationFrame(animId);
+    document.getElementById('btn-run').textContent = 'Run';
+    init();
+  });
+
+  // Slider label sync + increment buttons
+  [
+    ['ctrl-n',     'val-n',     v => v],
+    ['ctrl-t0',    'val-t0',    v => v],
+    ['ctrl-alpha', 'val-alpha', v => parseFloat(v).toFixed(4)],
+    ['ctrl-speed', 'val-speed', v => v],
+  ].forEach(([ctrlId, valId, fmt]) => {
+    const el = document.getElementById(ctrlId);
+    const lbl = document.getElementById(valId);
+    el.addEventListener('input', function () {
+      lbl.textContent = fmt(this.value);
+    });
+    document.getElementById(ctrlId + '-minus').addEventListener('click', () => {
+      el.stepDown();
+      lbl.textContent = fmt(el.value);
+    });
+    document.getElementById(ctrlId + '-plus').addEventListener('click', () => {
+      el.stepUp();
+      lbl.textContent = fmt(el.value);
+    });
+  });
+
+  init();
+</script>
+
+</body>
+</html>
