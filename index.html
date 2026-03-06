@@ -740,7 +740,7 @@
     }
 
     // Physics — switching preset (reversed field overcomes anisotropy)
-    const ALPHA = 0.15, HZ = -1.3, HANI = 1.0;
+    const ALPHA = 0.15, HZ = -1.15, HANI = 1.0;
     const C = 1 / (1 + ALPHA * ALPHA);
 
     function cross(a, b) {
@@ -777,7 +777,7 @@
     let m = [0, 0, 1];
 
     function reset() {
-      const th = 10 * Math.PI / 180;
+      const th = 5 * Math.PI / 180;
       m = [Math.sin(th), 0, Math.cos(th)];
       simTime = 0; tHead = 0; tCount = 0;
     }
