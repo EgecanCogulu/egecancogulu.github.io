@@ -1182,23 +1182,6 @@ nav {
   border: none;
 }
 
-/* Wide Plotly charts (1050px source): scale to fit prose width (720px) */
-.prose .embed-wrap-plotly {
-  margin: 32px 0;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  overflow: hidden;
-  height: 446px; /* 650 * (720/1050) */
-}
-
-.prose .embed-wrap-plotly iframe {
-  display: block;
-  border: none;
-  width: 1050px;
-  height: 650px;
-  transform: scale(0.686);   /* 720/1050 */
-  transform-origin: top left;
-}
 
 /* Two-column post layout: prose + TOC sidebar */
 .post-body-grid {

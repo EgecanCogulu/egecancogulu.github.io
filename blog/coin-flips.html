@@ -8,6 +8,111 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
+  <style>
+    .sim-box {
+      margin: 2rem 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .sim-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #ffffff;
+    }
+    .sim-legend {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+    .sim-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .sim-legend-line {
+      width: 20px;
+      height: 0;
+      border: none;
+      display: inline-block;
+    }
+    .sim-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.25rem;
+      padding: 0.55rem 1rem;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+      font-size: 0.77rem;
+      color: #334155;
+    }
+    .sim-stats strong { color: #1e293b; }
+    .sim-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem 1rem;
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+    }
+    .sim-ctrl-row { display: flex; flex-direction: column; gap: 4px; }
+    .sim-ctrl-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #334155;
+    }
+    .sim-ctrl-header strong { color: #1e293b; }
+    .sim-ctrl-track {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .sim-ctrl-track input[type="range"] {
+      flex: 1;
+      accent-color: #0284c7;
+      cursor: pointer;
+    }
+    .sim-inc {
+      width: 1.6rem;
+      height: 1.6rem;
+      flex-shrink: 0;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #e2e8f0;
+      color: #334155;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sim-inc:hover { background: #cbd5e1; }
+    .sim-btns {
+      display: flex;
+      gap: 0.4rem;
+      padding-top: 0.25rem;
+    }
+    .sim-btn-reset {
+      padding: 0.32rem 0.9rem;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #e2e8f0;
+      color: #334155;
+      font-size: 0.77rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .sim-btn-reset:hover { background: #cbd5e1; }
+  </style>
   <script>
     MathJax = {
       tex: {
@@ -189,40 +294,121 @@
     <h3>Frequentist Confidence Interval Visualization</h3>
 
     <p>
-      The interactive plot below shows how 95% confidence intervals change based on the observed number of
-      heads (from 0 to 10) in 10 flips. Notice that when you observe very few or very many heads, the interval
-      is narrower, while intermediate values show wider uncertainty.
+      Use the sliders below to adjust the total number of flips and the observed number of heads.
+      The visualization shows the point estimate and 95% Wilson confidence interval in real time.
+      Notice how the interval narrows as the sample size grows, and how extreme outcomes
+      (all heads or all tails) produce narrower intervals than intermediate ones.
     </p>
 
-    <div class="embed-wrap-plotly">
-      <iframe src="https://egecancogulu.github.io/images/confidence_interval_plot_10_coin_flips.html" title="Frequentist confidence interval visualization"></iframe>
+    <div class="sim-box">
+      <canvas id="freq-canvas" class="sim-canvas" width="600" height="200"></canvas>
+      <div class="sim-stats">
+        <span>p&#770; = <strong id="freq-phat">0.700</strong></span>
+        <span>95% CI: <strong id="freq-ci">[0.354, 0.933]</strong></span>
+        <span>Width: <strong id="freq-width">0.579</strong></span>
+      </div>
+      <div class="sim-controls">
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>N (total flips)</span>
+            <strong id="val-freq-n">10</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-freq-n').stepDown();document.getElementById('ctrl-freq-n').dispatchEvent(new Event('input'))">&#8722;</button>
+            <input type="range" id="ctrl-freq-n" min="2" max="100" value="10" step="1">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-freq-n').stepUp();document.getElementById('ctrl-freq-n').dispatchEvent(new Event('input'))">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Heads observed</span>
+            <strong id="val-freq-k">7</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-freq-k').stepDown();document.getElementById('ctrl-freq-k').dispatchEvent(new Event('input'))">&#8722;</button>
+            <input type="range" id="ctrl-freq-k" min="0" max="10" value="7" step="1">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-freq-k').stepUp();document.getElementById('ctrl-freq-k').dispatchEvent(new Event('input'))">+</button>
+          </div>
+        </div>
+        <div class="sim-btns">
+          <button class="sim-btn-reset" id="btn-freq-reset">Reset</button>
+        </div>
+      </div>
     </div>
 
-    <h3>Bayesian Posterior Visualizations</h3>
+    <h3>Bayesian Posterior Visualization</h3>
 
     <p>
-      The first visualization shows the posterior distribution using a <strong>uniform prior</strong>
-      $$\text{Beta}(1,1)$$, representing complete ignorance about the coin.
+      The visualization below lets you set your own prior via the $$\alpha$$ and $$\beta$$ sliders
+      and observe how the posterior updates with observed data. Setting $$\alpha = \beta = 1$$ gives the
+      uniform prior (complete ignorance), while higher values like $$\alpha = \beta = 10$$ express a
+      strong belief that the coin is fair. The gray curve shows your prior, the blue curve shows the
+      posterior after observing the data, and the shaded region marks the 95% credible interval.
     </p>
 
-    <div class="embed-wrap-plotly">
-      <iframe src="https://egecancogulu.github.io/images/bayesian_plot_uniform_prior.html" title="Bayesian posterior with uniform prior"></iframe>
+    <div class="sim-box">
+      <div class="sim-legend">
+        <span class="sim-legend-item"><span class="sim-legend-line" style="border-top: 2px solid #94a3b8"></span> Prior</span>
+        <span class="sim-legend-item"><span class="sim-legend-line" style="border-top: 2.5px solid #2563eb"></span> Posterior</span>
+        <span class="sim-legend-item"><span class="sim-legend-line" style="border-top: 1.5px dashed #dc2626"></span> MLE</span>
+        <span class="sim-legend-item"><span class="sim-legend-line" style="border-top: 1.5px dotted #2563eb"></span> Posterior Mean</span>
+      </div>
+      <canvas id="bayes-canvas" class="sim-canvas" width="600" height="320"></canvas>
+      <div class="sim-stats">
+        <span>Posterior: <strong id="bayes-post">Beta(8, 4)</strong></span>
+        <span>Mean: <strong id="bayes-mean">0.667</strong></span>
+        <span>95% CI: <strong id="bayes-ci">[0.408, 0.891]</strong></span>
+      </div>
+      <div class="sim-controls">
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Prior &#945; (alpha)</span>
+            <strong id="val-bayes-a">1</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-a').stepDown();document.getElementById('ctrl-bayes-a').dispatchEvent(new Event('input'))">&#8722;</button>
+            <input type="range" id="ctrl-bayes-a" min="1" max="50" value="1" step="1">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-a').stepUp();document.getElementById('ctrl-bayes-a').dispatchEvent(new Event('input'))">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Prior &#946; (beta)</span>
+            <strong id="val-bayes-b">1</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-b').stepDown();document.getElementById('ctrl-bayes-b').dispatchEvent(new Event('input'))">&#8722;</button>
+            <input type="range" id="ctrl-bayes-b" min="1" max="50" value="1" step="1">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-b').stepUp();document.getElementById('ctrl-bayes-b').dispatchEvent(new Event('input'))">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Observed heads</span>
+            <strong id="val-bayes-h">7</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-h').stepDown();document.getElementById('ctrl-bayes-h').dispatchEvent(new Event('input'))">&#8722;</button>
+            <input type="range" id="ctrl-bayes-h" min="0" max="100" value="7" step="1">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-h').stepUp();document.getElementById('ctrl-bayes-h').dispatchEvent(new Event('input'))">+</button>
+          </div>
+        </div>
+        <div class="sim-ctrl-row">
+          <div class="sim-ctrl-header">
+            <span>Observed tails</span>
+            <strong id="val-bayes-t">3</strong>
+          </div>
+          <div class="sim-ctrl-track">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-t').stepDown();document.getElementById('ctrl-bayes-t').dispatchEvent(new Event('input'))">&#8722;</button>
+            <input type="range" id="ctrl-bayes-t" min="0" max="100" value="3" step="1">
+            <button class="sim-inc" onclick="document.getElementById('ctrl-bayes-t').stepUp();document.getElementById('ctrl-bayes-t').dispatchEvent(new Event('input'))">+</button>
+          </div>
+        </div>
+        <div class="sim-btns">
+          <button class="sim-btn-reset" id="btn-bayes-reset">Reset</button>
+        </div>
+      </div>
     </div>
-
-    <p>Bayesian credible interval with uniform prior (minimal prior assumptions).</p>
-
-    <p>
-      The second visualization uses a <strong>strong prior</strong> that assumes the coin is fair (centered
-      near $$p = 0.5$$). Compare the two: with the strong prior, observing 7 heads pulls the posterior less
-      dramatically away from 0.5, because you started with a strong belief in fairness. This illustrates how
-      prior choice affects conclusions.
-    </p>
-
-    <div class="embed-wrap-plotly">
-      <iframe src="https://egecancogulu.github.io/images/bayesian_plot_strong_prior.html" title="Bayesian posterior with strong prior"></iframe>
-    </div>
-
-    <p>Bayesian credible interval with strong prior (assumes coin fairness before seeing data).</p>
 
     <h2>Conclusion</h2>
 
@@ -291,21 +477,411 @@
     });
   });
 
-  // Dynamically scale Plotly iframes to fit available width
-  function resizePlotlyCharts() {
-    document.querySelectorAll('.embed-wrap-plotly').forEach(wrap => {
-      const available = wrap.offsetWidth;
-      if (available <= 0) return;
-      const scale = available / 1050;
-      const iframe = wrap.querySelector('iframe');
-      if (iframe) {
-        iframe.style.transform = `scale(${scale})`;
-        wrap.style.height = (650 * scale) + 'px';
-      }
-    });
+  // ── Hi-DPI canvas helper ──
+  function setupHiDPI(canvas, logicalW, logicalH) {
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = logicalW * dpr;
+    canvas.height = logicalH * dpr;
+    // Let CSS width:100% handle sizing; set aspect ratio via attribute
+    canvas.removeAttribute('style');
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return ctx;
   }
-  resizePlotlyCharts();
-  window.addEventListener('resize', resizePlotlyCharts, { passive: true });
+
+  // ── Frequentist CI Visualization ──
+  (function() {
+    const canvas = document.getElementById('freq-canvas');
+    const LW = 600, LH = 200;
+    const ctx = setupHiDPI(canvas, LW, LH);
+    const sliderN = document.getElementById('ctrl-freq-n');
+    const sliderK = document.getElementById('ctrl-freq-k');
+    const valN = document.getElementById('val-freq-n');
+    const valK = document.getElementById('val-freq-k');
+    const statPhat = document.getElementById('freq-phat');
+    const statCI = document.getElementById('freq-ci');
+    const statWidth = document.getElementById('freq-width');
+
+    function wilsonCI(k, n) {
+      const z = 1.96;
+      const p = k / n;
+      const z2 = z * z;
+      const denom = 1 + z2 / n;
+      const center = (p + z2 / (2 * n)) / denom;
+      const margin = (z / denom) * Math.sqrt(p * (1 - p) / n + z2 / (4 * n * n));
+      return [Math.max(0, center - margin), Math.min(1, center + margin)];
+    }
+
+    function draw() {
+      const W = LW, H = LH;
+      const n = +sliderN.value;
+      const k = +sliderK.value;
+      const phat = k / n;
+      const [lo, hi] = wilsonCI(k, n);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+
+      const mx = 60;
+      const plotW = W - 2 * mx;
+      const lineY = H / 2;
+      const toX = p => mx + p * plotW;
+
+      // axis line
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(mx, lineY);
+      ctx.lineTo(mx + plotW, lineY);
+      ctx.stroke();
+
+      // tick marks and labels
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      for (let t = 0; t <= 1.001; t += 0.25) {
+        const x = toX(t);
+        ctx.beginPath();
+        ctx.moveTo(x, lineY - 6);
+        ctx.lineTo(x, lineY + 6);
+        ctx.stroke();
+        ctx.fillText(t.toFixed(2), x, lineY + 22);
+      }
+
+      // p=0.5 reference line
+      ctx.strokeStyle = 'rgba(148,163,184,0.35)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(toX(0.5), lineY - 40);
+      ctx.lineTo(toX(0.5), lineY + 6);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // CI bar
+      const barH = 16;
+      ctx.fillStyle = 'rgba(59,130,246,0.25)';
+      ctx.fillRect(toX(lo), lineY - barH / 2, toX(hi) - toX(lo), barH);
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(toX(lo), lineY - barH / 2, toX(hi) - toX(lo), barH);
+
+      // CI bound whiskers
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(toX(lo), lineY - barH);
+      ctx.lineTo(toX(lo), lineY + barH);
+      ctx.moveTo(toX(hi), lineY - barH);
+      ctx.lineTo(toX(hi), lineY + barH);
+      ctx.stroke();
+
+      // p-hat marker
+      ctx.fillStyle = '#ea580c';
+      ctx.beginPath();
+      ctx.arc(toX(phat), lineY, 7, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // label above p-hat
+      ctx.fillStyle = '#ea580c';
+      ctx.font = 'bold 12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('p\u0302 = ' + phat.toFixed(3), toX(phat), lineY - 28);
+
+      // CI bound labels
+      ctx.fillStyle = '#2563eb';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(lo.toFixed(3), toX(lo), lineY + 38);
+      ctx.fillText(hi.toFixed(3), toX(hi), lineY + 38);
+
+      // axis label
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Probability of Heads (p)', W / 2, H - 5);
+
+      // stats
+      statPhat.textContent = phat.toFixed(3);
+      statCI.textContent = '[' + lo.toFixed(3) + ', ' + hi.toFixed(3) + ']';
+      statWidth.textContent = (hi - lo).toFixed(3);
+    }
+
+    sliderN.addEventListener('input', () => {
+      const n = +sliderN.value;
+      valN.textContent = n;
+      sliderK.max = n;
+      if (+sliderK.value > n) { sliderK.value = n; valK.textContent = n; }
+      draw();
+    });
+    sliderK.addEventListener('input', () => {
+      valK.textContent = sliderK.value;
+      draw();
+    });
+    document.getElementById('btn-freq-reset').addEventListener('click', () => {
+      sliderN.value = 10; valN.textContent = '10';
+      sliderK.max = 10;
+      sliderK.value = 7; valK.textContent = '7';
+      draw();
+    });
+    draw();
+  })();
+
+  // ── Bayesian Posterior Visualization ──
+  (function() {
+    const canvas = document.getElementById('bayes-canvas');
+    const LW = 600, LH = 320;
+    const ctx = setupHiDPI(canvas, LW, LH);
+    const sliderA = document.getElementById('ctrl-bayes-a');
+    const sliderB = document.getElementById('ctrl-bayes-b');
+    const sliderH = document.getElementById('ctrl-bayes-h');
+    const sliderT = document.getElementById('ctrl-bayes-t');
+    const valA = document.getElementById('val-bayes-a');
+    const valB = document.getElementById('val-bayes-b');
+    const valH = document.getElementById('val-bayes-h');
+    const valT = document.getElementById('val-bayes-t');
+    const statPost = document.getElementById('bayes-post');
+    const statMean = document.getElementById('bayes-mean');
+    const statCI = document.getElementById('bayes-ci');
+
+    // Lanczos approximation for ln(Gamma)
+    function lnGamma(z) {
+      const g = 7;
+      const c = [
+        0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+        771.32342877765313, -176.61502916214059, 12.507343278686905,
+        -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
+      ];
+      if (z < 0.5) {
+        return Math.log(Math.PI / Math.sin(Math.PI * z)) - lnGamma(1 - z);
+      }
+      z -= 1;
+      let x = c[0];
+      for (let i = 1; i < g + 2; i++) x += c[i] / (z + i);
+      const t = z + g + 0.5;
+      return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+    }
+
+    function betaPDF(x, a, b) {
+      if (x <= 0 || x >= 1) return 0;
+      const ln = (a - 1) * Math.log(x) + (b - 1) * Math.log(1 - x)
+               - (lnGamma(a) + lnGamma(b) - lnGamma(a + b));
+      return Math.exp(ln);
+    }
+
+    function credibleInterval(a, b, level) {
+      // Use finer grid and interpolation for accurate quantiles
+      const N = 5000;
+      const dx = 1 / N;
+      const loTail = (1 - level) / 2;
+      const hiTail = 1 - loTail;
+      const cdf = new Float64Array(N + 1);
+      cdf[0] = 0;
+      for (let i = 1; i <= N; i++) {
+        const x0 = (i - 1) * dx;
+        const x1 = i * dx;
+        cdf[i] = cdf[i - 1] + (betaPDF(x0, a, b) + betaPDF(x1, a, b)) * 0.5 * dx;
+      }
+      // Normalize to handle any numerical drift
+      const total = cdf[N];
+      let lo = 0, hi = 1;
+      for (let i = 1; i <= N; i++) {
+        const v = cdf[i] / total;
+        if (lo === 0 && v >= loTail) {
+          // Linear interpolation between i-1 and i
+          const prev = cdf[i - 1] / total;
+          const frac = (loTail - prev) / (v - prev);
+          lo = ((i - 1) + frac) * dx;
+        }
+        if (hi === 1 && v >= hiTail) {
+          const prev = cdf[i - 1] / total;
+          const frac = (hiTail - prev) / (v - prev);
+          hi = ((i - 1) + frac) * dx;
+          break;
+        }
+      }
+      return [lo, hi];
+    }
+
+    function samplePDF(a, b, n) {
+      const pts = [];
+      for (let i = 0; i <= n; i++) {
+        const x = i / n;
+        pts.push({ x, y: betaPDF(x === 0 ? 0.001 : x === 1 ? 0.999 : x, a, b) });
+      }
+      return pts;
+    }
+
+    function draw() {
+      const W = LW, H = LH;
+      const priorA = +sliderA.value, priorB = +sliderB.value;
+      const heads = +sliderH.value, tails = +sliderT.value;
+      const postA = priorA + heads, postB = priorB + tails;
+      const totalObs = heads + tails;
+
+      const N = 500;
+      const priorPts = samplePDF(priorA, priorB, N);
+      const postPts = samplePDF(postA, postB, N);
+
+      const maxY = Math.max(
+        ...priorPts.map(p => p.y),
+        ...postPts.map(p => p.y),
+        0.1
+      );
+
+      const mx = 50, mt = 30, mb = 40, mr = 20;
+      const plotW = W - mx - mr;
+      const plotH = H - mt - mb;
+      const toX = x => mx + x * plotW;
+      const toY = y => mt + plotH - (y / maxY) * plotH;
+
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, W, H);
+
+      // grid lines
+      ctx.strokeStyle = 'rgba(203,213,225,0.5)';
+      ctx.lineWidth = 1;
+      const yTicks = 5;
+      for (let i = 0; i <= yTicks; i++) {
+        const y = mt + (plotH / yTicks) * i;
+        ctx.beginPath();
+        ctx.moveTo(mx, y);
+        ctx.lineTo(mx + plotW, y);
+        ctx.stroke();
+      }
+
+      // credible interval shading
+      const [ciLo, ciHi] = credibleInterval(postA, postB, 0.95);
+      ctx.fillStyle = 'rgba(59,130,246,0.15)';
+      ctx.beginPath();
+      ctx.moveTo(toX(ciLo), toY(0));
+      for (let i = 0; i <= N; i++) {
+        const x = i / N;
+        if (x >= ciLo && x <= ciHi) {
+          ctx.lineTo(toX(x), toY(betaPDF(x === 0 ? 0.001 : x === 1 ? 0.999 : x, postA, postB)));
+        }
+      }
+      ctx.lineTo(toX(ciHi), toY(0));
+      ctx.closePath();
+      ctx.fill();
+
+      // draw prior curve
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      priorPts.forEach((p, i) => {
+        const fn = i === 0 ? 'moveTo' : 'lineTo';
+        ctx[fn](toX(p.x), toY(p.y));
+      });
+      ctx.stroke();
+
+      // draw posterior curve
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      postPts.forEach((p, i) => {
+        const fn = i === 0 ? 'moveTo' : 'lineTo';
+        ctx[fn](toX(p.x), toY(p.y));
+      });
+      ctx.stroke();
+
+      // CI bound dashed lines
+      ctx.strokeStyle = 'rgba(37,99,235,0.5)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      [ciLo, ciHi].forEach(v => {
+        ctx.beginPath();
+        ctx.moveTo(toX(v), toY(0));
+        ctx.lineTo(toX(v), toY(betaPDF(v, postA, postB)));
+        ctx.stroke();
+      });
+      ctx.setLineDash([]);
+
+      // MLE vertical line (heads / total observed)
+      if (totalObs > 0) {
+        const mle = heads / totalObs;
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 3]);
+        ctx.beginPath();
+        ctx.moveTo(toX(mle), toY(0));
+        ctx.lineTo(toX(mle), mt);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Posterior mean vertical line
+      const postMean = postA / (postA + postB);
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath();
+      ctx.moveTo(toX(postMean), toY(0));
+      ctx.lineTo(toX(postMean), mt);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // axes
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(mx, mt);
+      ctx.lineTo(mx, mt + plotH);
+      ctx.lineTo(mx + plotW, mt + plotH);
+      ctx.stroke();
+
+      // x-axis ticks
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      for (let t = 0; t <= 1.001; t += 0.25) {
+        const x = toX(t);
+        ctx.beginPath();
+        ctx.moveTo(x, mt + plotH);
+        ctx.lineTo(x, mt + plotH + 5);
+        ctx.stroke();
+        ctx.fillText(t.toFixed(2), x, mt + plotH + 18);
+      }
+
+      // y-axis ticks
+      ctx.textAlign = 'right';
+      for (let i = 0; i <= yTicks; i++) {
+        const val = (maxY / yTicks) * (yTicks - i);
+        const y = mt + (plotH / yTicks) * i;
+        ctx.fillText(val.toFixed(1), mx - 8, y + 4);
+      }
+
+      // x-axis label
+      ctx.textAlign = 'center';
+      ctx.fillText('Probability of Heads (p)', W / 2, H - 5);
+
+      // y-axis label
+      ctx.save();
+      ctx.translate(14, mt + plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText('Density', 0, 0);
+      ctx.restore();
+
+      // stats
+      statPost.textContent = 'Beta(' + postA + ', ' + postB + ')';
+      statMean.textContent = postMean.toFixed(3);
+      statCI.textContent = '[' + ciLo.toFixed(3) + ', ' + ciHi.toFixed(3) + ']';
+    }
+
+    [sliderA, sliderB, sliderH, sliderT].forEach((sl, i) => {
+      const labels = [valA, valB, valH, valT];
+      sl.addEventListener('input', () => { labels[i].textContent = sl.value; draw(); });
+    });
+    document.getElementById('btn-bayes-reset').addEventListener('click', () => {
+      sliderA.value = 1; valA.textContent = '1';
+      sliderB.value = 1; valB.textContent = '1';
+      sliderH.value = 7; valH.textContent = '7';
+      sliderT.value = 3; valT.textContent = '3';
+      draw();
+    });
+    draw();
+  })();
 
   const headings = document.querySelectorAll('.prose h2');
   const tocList = document.getElementById('toc-list');
