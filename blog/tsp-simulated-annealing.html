@@ -102,6 +102,7 @@
     .sim-inc:hover { background: #475569; }
     .sim-btns {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.4rem;
       padding-top: 0.25rem;
     }
@@ -116,8 +117,8 @@
     }
     #btn-run { background: #0284c7; color: #fff; min-width: 4rem; }
     #btn-run:hover { background: #0369a1; }
-    #btn-reset { background: #475569; color: #e2e8f0; }
-    #btn-reset:hover { background: #64748b; }
+    #btn-reset, #btn-new-cities, #btn-reset-params { background: #475569; color: #e2e8f0; }
+    #btn-reset:hover, #btn-new-cities:hover, #btn-reset-params:hover { background: #64748b; }
   </style>
 </head>
 <body>
@@ -306,9 +307,10 @@
 
     <p>
       The simulation below runs simulated annealing on a set of randomly placed cities.
-      Hit <strong>Run</strong> to start and <strong>Pause</strong> to stop. <strong>Reset</strong>
-      generates a new layout using the current N. Changes to N and $$T_0$$ take effect on the next
-      reset; $$\alpha$$ and Speed apply immediately.
+      Hit <strong>Run</strong> to start and <strong>Pause</strong> to stop. <strong>Reset Solver</strong>
+      starts over with the same cities, while <strong>New Cities</strong> generates a new layout using
+      the current N. Changes to N take effect with New Cities; $$T_0$$ takes effect with either reset.
+      $$\alpha$$ and Speed apply immediately.
     </p>
 
     <p>A few things to try:</p>
@@ -332,33 +334,33 @@
         <div class="sim-ctrl-row">
           <div class="sim-ctrl-header">
             <span>Cities (N)</span>
-            <strong id="val-n">20</strong>
+            <strong id="val-n">25</strong>
           </div>
           <div class="sim-ctrl-track">
             <button class="sim-inc" id="ctrl-n-minus">&#8722;</button>
-            <input type="range" id="ctrl-n" min="5" max="60" value="20" step="1">
+            <input type="range" id="ctrl-n" min="5" max="60" value="25" step="1">
             <button class="sim-inc" id="ctrl-n-plus">+</button>
           </div>
         </div>
         <div class="sim-ctrl-row">
           <div class="sim-ctrl-header">
             <span>T<sub>0</sub></span>
-            <strong id="val-t0">1000</strong>
+            <strong id="val-t0">2400</strong>
           </div>
           <div class="sim-ctrl-track">
             <button class="sim-inc" id="ctrl-t0-minus">&#8722;</button>
-            <input type="range" id="ctrl-t0" min="100" max="5000" value="1000" step="100">
+            <input type="range" id="ctrl-t0" min="100" max="5000" value="2400" step="100">
             <button class="sim-inc" id="ctrl-t0-plus">+</button>
           </div>
         </div>
         <div class="sim-ctrl-row">
           <div class="sim-ctrl-header">
             <span>&#945;</span>
-            <strong id="val-alpha">0.9950</strong>
+            <strong id="val-alpha">0.9965</strong>
           </div>
           <div class="sim-ctrl-track">
             <button class="sim-inc" id="ctrl-alpha-minus">&#8722;</button>
-            <input type="range" id="ctrl-alpha" min="0.9900" max="0.9999" value="0.9950" step="0.0001">
+            <input type="range" id="ctrl-alpha" min="0.9900" max="0.9999" value="0.9965" step="0.0001">
             <button class="sim-inc" id="ctrl-alpha-plus">+</button>
           </div>
         </div>
@@ -375,7 +377,9 @@
         </div>
         <div class="sim-btns">
           <button class="sim-btn" id="btn-run">Run</button>
-          <button class="sim-btn" id="btn-reset">Reset</button>
+          <button class="sim-btn" id="btn-reset">Reset Solver</button>
+          <button class="sim-btn" id="btn-new-cities">New Cities</button>
+          <button class="sim-btn" id="btn-reset-params">Reset Parameters</button>
         </div>
       </div>
     </div>
@@ -473,15 +477,15 @@
     return arr;
   }
 
-  function init() {
-    const n = +document.getElementById('ctrl-n').value;
+  function stopSimulation() {
+    running = false;
+    cancelAnimationFrame(animId);
+    document.getElementById('btn-run').textContent = 'Run';
+  }
+
+  function resetSolver() {
     const t0 = +document.getElementById('ctrl-t0').value;
-    const pad = 40;
-    cities = Array.from({ length: n }, () => ({
-      x: pad + Math.random() * (CW - 2 * pad),
-      y: pad + Math.random() * (CH - 2 * pad),
-    }));
-    tour = shuffle(Array.from({ length: n }, (_, i) => i));
+    tour = shuffle(Array.from({ length: cities.length }, (_, i) => i));
     currentLength = tourLen(tour);
     bestTour = tour.slice();
     bestLength = currentLength;
@@ -489,6 +493,16 @@
     iteration = 0;
     draw();
     updateStats();
+  }
+
+  function newCities() {
+    const n = +document.getElementById('ctrl-n').value;
+    const pad = 40;
+    cities = Array.from({ length: n }, () => ({
+      x: pad + Math.random() * (CW - 2 * pad),
+      y: pad + Math.random() * (CH - 2 * pad),
+    }));
+    resetSolver();
   }
 
   function twoOptDelta(i, j) {
@@ -602,10 +616,27 @@
   });
 
   document.getElementById('btn-reset').addEventListener('click', () => {
-    running = false;
-    cancelAnimationFrame(animId);
-    document.getElementById('btn-run').textContent = 'Run';
-    init();
+    stopSimulation();
+    resetSolver();
+  });
+
+  document.getElementById('btn-new-cities').addEventListener('click', () => {
+    stopSimulation();
+    newCities();
+  });
+
+  document.getElementById('btn-reset-params').addEventListener('click', () => {
+    const defaults = {
+      'ctrl-n': '25',
+      'ctrl-t0': '2400',
+      'ctrl-alpha': '0.9965',
+      'ctrl-speed': '10',
+    };
+    Object.entries(defaults).forEach(([id, value]) => {
+      const control = document.getElementById(id);
+      control.value = value;
+      control.dispatchEvent(new Event('input'));
+    });
   });
 
   // Slider label sync + increment buttons
@@ -630,7 +661,7 @@
     });
   });
 
-  init();
+  newCities();
 </script>
 
 </body>
