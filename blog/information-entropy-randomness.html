@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Why ordered lottery numbers feel less random, even though every exact ticket has the same chance of winning.">
+  <title>Is 1, 2, 3, 4, 5, 6 a Bad Lottery Guess? | Ege Cogulu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$$', '$$'], ['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']],
+        processEscapes: true,
+      }
+    };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    .prose table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .prose th,
+    .prose td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.8rem;
+      text-align: left;
+    }
+
+    .prose th {
+      background: #f8fafc;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .key-idea {
+      margin: 1.75rem 0;
+      padding: 1.1rem 1.25rem;
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      background: rgba(2, 132, 199, 0.05);
+    }
+
+    .key-idea p {
+      margin: 0;
+      color: var(--text);
+    }
+
+    .ticket-pair {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+
+    .ticket {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 7px;
+      padding: 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .ticket-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .macro-explorer {
+      margin: 2rem 0;
+      padding: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .macro-explorer h3 {
+      margin: 0 0 0.35rem;
+    }
+
+    .macro-explorer > p {
+      margin: 0 0 1.25rem;
+      font-size: 0.9rem;
+    }
+
+    .macro-rows {
+      display: grid;
+      gap: 10px;
+    }
+
+    .macro-row {
+      display: grid;
+      grid-template-columns: minmax(175px, 1.25fr) minmax(150px, 2fr) 92px;
+      gap: 12px;
+      align-items: center;
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.8rem;
+      text-align: left;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease;
+    }
+
+    .macro-row:hover,
+    .macro-row.active {
+      border-color: rgba(2, 132, 199, 0.3);
+      background: #ffffff;
+    }
+
+    .macro-row.active {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .macro-track {
+      height: 12px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #e2e8f0;
+    }
+
+    .macro-bar {
+      width: 2%;
+      height: 100%;
+      border-radius: inherit;
+      background: #94a3b8;
+      transition: width 400ms ease, background 160ms ease;
+    }
+
+    .macro-row.active .macro-bar {
+      background: var(--accent);
+    }
+
+    .macro-count {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .macro-results {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 1.25rem;
+    }
+
+    .macro-stat {
+      min-width: 0;
+      padding: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .macro-stat-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--faint);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .macro-stat-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .macro-note {
+      margin: 0.9rem 0 0 !important;
+      color: var(--faint) !important;
+      font-size: 0.74rem !important;
+    }
+
+    @media (max-width: 680px) {
+      .ticket-pair { grid-template-columns: 1fr; }
+
+      .macro-row {
+        grid-template-columns: 1fr 70px;
+      }
+
+      .macro-track {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .macro-results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Home</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-dropdown">
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#blog">Blog</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../cv.html" class="btn-nav">Resume</a>
+</div>
+
+<div class="container post-layout">
+
+  <div class="post-header">
+    <p class="section-label">Blog</p>
+    <h1 class="post-title">Is 1, 2, 3, 4, 5, 6 a Bad Lottery Guess?</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">August 26, 2026</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Entropy</span>
+        <span class="blog-tag">Information</span>
+        <span class="blog-tag">Randomness</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+
+    <h2>Six Numbers for My Grandfather</h2>
+
+    <p>
+      When I was a child, my grandfather played the lottery often. The game asked him to choose six
+      numbers from 1 to 49, and sometimes he asked me to pick them.
+    </p>
+
+    <p>
+      I usually answered with <code>1, 2, 3, 4, 5, 6</code>, or perhaps
+      <code>2, 4, 6, 8, 10, 12</code>. I was teasing him. He knew it too. He would object, ask me to
+      be serious, and refuse to waste money on my unserious guesses. To both of us, those numbers
+      looked like jokes rather than possible lottery results.
+    </p>
+
+    <p>
+      My grandfather also believed that people were bad at choosing random numbers. He was right
+      about that. We tend to avoid repetitions, spread numbers too evenly, and mistake a lack of
+      visible patterns for randomness. I explored some of those habits in
+      <a href="randomness.html">an earlier post about randomness</a>.
+    </p>
+
+    <p>
+      His solution was wonderfully practical. He made a small lottery of his own, drawing numbers
+      from a bag as if he were playing bingo. The bag would choose without human bias. Surely that
+      had to produce a better ticket.
+    </p>
+
+    <h2>How Many Tickets Are Possible?</h2>
+
+    <p>
+      Years later, after studying statistics, mathematics, and physics, I saw the puzzle differently.
+      A 6-from-49 lottery has
+    </p>
+
+    \[
+      \binom{49}{6} = \frac{49!}{6!43!} = 13{,}983{,}816
+    \]
+
+    <p>
+      possible tickets. Order does not matter, and a number cannot appear twice. A fair lottery gives
+      every one of those tickets the same probability.
+    </p>
+
+    <div class="ticket-pair" aria-label="Two equally likely lottery tickets">
+      <div class="ticket">
+        <span class="ticket-number">1</span>
+        <span class="ticket-number">2</span>
+        <span class="ticket-number">3</span>
+        <span class="ticket-number">4</span>
+        <span class="ticket-number">5</span>
+        <span class="ticket-number">6</span>
+      </div>
+      <div class="ticket">
+        <span class="ticket-number">2</span>
+        <span class="ticket-number">8</span>
+        <span class="ticket-number">11</span>
+        <span class="ticket-number">16</span>
+        <span class="ticket-number">42</span>
+        <span class="ticket-number">48</span>
+      </div>
+    </div>
+
+    <p>
+      Each ticket above has a 1 in 13,983,816 chance. My joke was a perfectly valid guess. Grandpa's
+      bag could choose a more random-looking ticket, but the lottery machine gave that ticket the same
+      chance as mine.
+    </p>
+
+    <h2>What Are We Actually Comparing?</h2>
+
+    <p>
+      This is where semantics starts to matter. What does <code>1, 2, 3, 4, 5, 6</code> represent in
+      the comparison? It can mean one exact ticket. It can also stand for a broader idea such as
+      "a recognizable sequence." Those are different events with different probabilities.
+    </p>
+
+    <div class="key-idea">
+      <p>
+        Compared as exact tickets, <code>1, 2, 3, 4, 5, 6</code> and
+        <code>2, 8, 11, 16, 42, 48</code> are equally likely. Compared as representatives of two
+        families, recognizable sequences are much rarer than combinations without a recognizable sequence.
+      </p>
+    </div>
+
+    <p>
+      Our intuition quietly moves from the first comparison to the second. That small change in meaning
+      produces a completely different probability question.
+    </p>
+
+    <h2>Counting Consecutive Tickets</h2>
+
+    <p>
+      There is only one ticket equal to <code>1, 2, 3, 4, 5, 6</code>. There are 44 tickets made from
+      six consecutive numbers. The first begins with 1, the next begins with 2, and the last is
+      <code>44, 45, 46, 47, 48, 49</code>.
+    </p>
+
+    <p>The probability that the winning numbers form any consecutive run is</p>
+
+    \[
+      P(\text{six consecutive}) = \frac{44}{\binom{49}{6}}
+      = \frac{1}{317{,}814}.
+    \]
+
+    <p>
+      That is about 0.000315%. The probability that the winning numbers are not consecutive is about
+      99.999685%.
+    </p>
+
+    <p>
+      The second joke ticket, <code>2, 4, 6, 8, 10, 12</code>, belongs to the family of arithmetic
+      progressions. In a 6-from-49 lottery, there are 216 six-term arithmetic progressions. The chance
+      of drawing one is about 1 in 64,740.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Compatible tickets</th>
+          <th>Probability</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>One exact ticket</td>
+          <td>1</td>
+          <td>1 in 13,983,816</td>
+        </tr>
+        <tr>
+          <td>Any six consecutive numbers</td>
+          <td>44</td>
+          <td>1 in 317,814</td>
+        </tr>
+        <tr>
+          <td>Any six-term arithmetic progression</td>
+          <td>216</td>
+          <td>About 1 in 64,740</td>
+        </tr>
+        <tr>
+          <td>Any non-consecutive ticket</td>
+          <td>13,983,772</td>
+          <td>About 99.999685%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      So the sentence "<code>1, 2, 3, 4, 5, 6</code> is less likely" can be true or false depending
+      on what it means. It is false when we compare that exact ticket with another exact ticket. It is
+      true when the sequence stands for a small, precisely defined family and we compare that family
+      with its much larger complement.
+    </p>
+
+    <h2>Microstates, Macrostates, and Entropy</h2>
+
+    <p>Physics gives us useful language for this counting problem.</p>
+
+    <p>
+      A <strong>microstate</strong> is one exact ticket. <code>1, 2, 3, 4, 5, 6</code> is one
+      microstate. So is <code>2, 8, 11, 16, 42, 48</code>.
+    </p>
+
+    <p>
+      A <strong>macrostate</strong> groups many microstates under one description. "Six consecutive
+      numbers" is a macrostate containing 44 tickets. "Numbers that are not consecutive" is a much
+      larger macrostate containing 13,983,772 tickets.
+    </p>
+
+    <p>Boltzmann's entropy counts how many microstates fit a macrostate:</p>
+
+    \[
+      S = k_B \ln W.
+    \]
+
+    <p>
+      The quantity $$W$$ is the number of compatible microstates. Larger $$W$$ means larger entropy.
+      The non-consecutive macrostate has far greater entropy because almost every possible ticket
+      belongs to it.
+    </p>
+
+    <p>
+      This is close to what our eyes do when they see lottery numbers. We recognize
+      <code>1, 2, 3, 4, 5, 6</code> as a member of a tiny, easy-to-name family. A messy-looking result
+      gets dropped into a huge catch-all family. We compare the families even when the original
+      question asked us to compare two individual tickets.
+    </p>
+
+    <h2>What Counts as a Recognizable Sequence?</h2>
+
+    <p>
+      The phrase "recognizable sequence" has no single mathematical definition. It might mean six
+      consecutive numbers, any six-term arithmetic progression, only odd numbers, shared final digits,
+      or a shape on the playslip. Someone else may notice a pattern that means nothing to me. These
+      categories can also overlap.
+    </p>
+
+    <p>
+      We only get a probability after choosing a rule and counting how many tickets satisfy it. Six
+      consecutive numbers gives us 44 microstates. Six-term arithmetic progressions gives us 216. A
+      broader definition of recognizable patterns would give us more. The semantic choice determines
+      the macrostate, and the macrostate determines the count.
+    </p>
+
+    <div class="macro-explorer" id="macro-explorer">
+      <h3>Explore the macrostates</h3>
+      <p>Choose a description to see how its number of compatible tickets changes the probability.</p>
+
+      <div class="macro-rows">
+        <button class="macro-row" type="button" data-count="1" data-description="One exact ticket">
+          <span>One exact ticket</span>
+          <span class="macro-track"><span class="macro-bar"></span></span>
+          <span class="macro-count">1</span>
+        </button>
+        <button class="macro-row active" type="button" data-count="44" data-description="Six consecutive numbers">
+          <span>Six consecutive numbers</span>
+          <span class="macro-track"><span class="macro-bar"></span></span>
+          <span class="macro-count">44</span>
+        </button>
+        <button class="macro-row" type="button" data-count="216" data-description="Six-term arithmetic progression">
+          <span>Six-term arithmetic progression</span>
+          <span class="macro-track"><span class="macro-bar"></span></span>
+          <span class="macro-count">216</span>
+        </button>
+        <button class="macro-row" type="button" data-count="13983772" data-description="Numbers that are not consecutive">
+          <span>Numbers that are not consecutive</span>
+          <span class="macro-track"><span class="macro-bar"></span></span>
+          <span class="macro-count">13,983,772</span>
+        </button>
+      </div>
+
+      <div class="macro-results" aria-live="polite">
+        <div class="macro-stat">
+          <span class="macro-stat-label">Microstates</span>
+          <span class="macro-stat-value" id="macro-microstates">44</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">Probability</span>
+          <span class="macro-stat-value" id="macro-probability">0.000315%</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">About 1 in</span>
+          <span class="macro-stat-value" id="macro-odds">317,814</span>
+        </div>
+        <div class="macro-stat">
+          <span class="macro-stat-label">Information</span>
+          <span class="macro-stat-value" id="macro-information">18.28 bits</span>
+        </div>
+      </div>
+
+      <p class="macro-note">
+        Bar lengths use a logarithmic scale. Arithmetic progressions include consecutive runs, so the
+        rows are separate comparisons rather than parts of one partition.
+      </p>
+    </div>
+
+    <h2>Information Gives Us Another View</h2>
+
+    <p>Shannon measured the information in an event as</p>
+
+    \[
+      I(x) = -\log_2 P(x).
+    \]
+
+    <p>
+      Under a fair lottery model, each exact ticket carries about 23.74 bits of information because
+      each has the same probability. Learning that the result was six consecutive numbers carries
+      about 18.28 bits because that event happens only once in 317,814 draws. Learning that the result
+      was non-consecutive tells us almost nothing because nearly every draw has that property.
+    </p>
+
+    <p>
+      Patterns also give us shorter descriptions. "The first six positive integers" is an easy way
+      to communicate <code>1, 2, 3, 4, 5, 6</code>. An irregular ticket may be easiest to communicate
+      by listing every number. This idea is often called description length or algorithmic complexity.
+      Short descriptions feel planned. Long, awkward descriptions feel random.
+    </p>
+
+    <p>
+      Entropy counts the size of a family, Shannon information measures surprise under a probability
+      model, and description length captures how simply we can state an outcome. The meaning we assign
+      to <code>1, 2, 3, 4, 5, 6</code> decides which probability question we are asking. That is why the
+      same sequence can be an ordinary individual ticket and an unusual kind of result at the same time.
+    </p>
+
+    <h2>What Did the Bag Improve?</h2>
+
+    <p>
+      The bag solved the problem my grandfather wanted to solve. It removed his habits from the
+      selection process and produced combinations without a human preference for certain numbers or shapes.
+    </p>
+
+    <p>
+      For the actual jackpot, the lottery machine only cared about the ticket he held. Once he had one
+      valid combination, there was exactly one winning draw that matched it among 13,983,816 possibilities.
+      His personal method for arriving at that ticket did not change that count.
+    </p>
+
+    <p>
+      That is the part I missed as a child. My sequence looked like a bad attempt at randomness because
+      it was easy to describe and belonged to a tiny family of obvious patterns. It remained one valid
+      ticket among millions.
+    </p>
+
+    <h2>The Question I Never Got to Ask</h2>
+
+    <p>
+      I still wonder what would have happened if my grandfather's homemade lottery had dropped
+      <code>1, 2, 3, 4, 5, 6</code> onto the table.
+    </p>
+
+    <p>Would he have played them?</p>
+
+    <p>I guess we will never know. :D</p>
+
+  </article>
+
+  <aside class="post-toc">
+    <div class="toc-label">In this post</div>
+    <ul id="toc-list"></ul>
+  </aside>
+  </div>
+
+  <div class="post-nav">
+    <a href="tsp-simulated-annealing.html" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous: Traveling Salesman Problem
+    </a>
+    <a href="../index.html#blog" class="btn btn-secondary">
+      All posts
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(240,244,248,0.97)'
+      : 'rgba(240,244,248,0.85)';
+  }, { passive: true });
+
+  const burger = document.querySelector('.nav-burger');
+  burger.addEventListener('click', () => {
+    const open = document.body.classList.toggle('nav-open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+
+  document.querySelectorAll('.nav-dropdown a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.body.classList.remove('nav-open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  const headings = document.querySelectorAll('.prose h2');
+  const tocList = document.getElementById('toc-list');
+  headings.forEach((heading, index) => {
+    heading.id = 'section-' + index;
+    const item = document.createElement('li');
+    const link = document.createElement('a');
+    link.href = '#section-' + index;
+    link.textContent = heading.textContent;
+    item.appendChild(link);
+    tocList.appendChild(item);
+  });
+
+  const tocLinks = tocList.querySelectorAll('a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    headings.forEach(heading => {
+      if (window.scrollY >= heading.offsetTop - 100) current = heading.id;
+    });
+    tocLinks.forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+    });
+  }, { passive: true });
+
+  const totalTickets = 13983816;
+  const macroRows = document.querySelectorAll('.macro-row');
+  const microstatesValue = document.getElementById('macro-microstates');
+  const probabilityValue = document.getElementById('macro-probability');
+  const oddsValue = document.getElementById('macro-odds');
+  const informationValue = document.getElementById('macro-information');
+
+  function formatProbability(probability) {
+    const percent = probability * 100;
+    if (percent < 0.001) return percent.toFixed(6) + '%';
+    if (percent < 1) return percent.toFixed(4) + '%';
+    return percent.toFixed(6).replace(/0+$/, '').replace(/\.$/, '') + '%';
+  }
+
+  function selectMacrostate(row) {
+    const count = Number(row.dataset.count);
+    const probability = count / totalTickets;
+    const odds = totalTickets / count;
+    const information = -Math.log2(probability);
+
+    macroRows.forEach(item => {
+      const selected = item === row;
+      item.classList.toggle('active', selected);
+      item.setAttribute('aria-pressed', String(selected));
+    });
+
+    microstatesValue.textContent = count.toLocaleString('en-US');
+    probabilityValue.textContent = formatProbability(probability);
+    oddsValue.textContent = odds < 2 ? '1.0' : Math.round(odds).toLocaleString('en-US');
+    informationValue.textContent = information.toFixed(2) + ' bits';
+  }
+
+  macroRows.forEach(row => {
+    const count = Number(row.dataset.count);
+    const logWidth = Math.log10(count) / Math.log10(totalTickets) * 100;
+    row.querySelector('.macro-bar').style.width = Math.max(2, logWidth) + '%';
+    row.addEventListener('click', () => selectMacrostate(row));
+  });
+
+  selectMacrostate(document.querySelector('.macro-row.active'));
+</script>
+
+</body>
+</html>
