@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Three interactive views of slope, intercept, and the linear regression loss surface.">
+  <title>What Does Linear Regression Minimize? | Ege Cogulu</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-body-grid { grid-template-columns: minmax(0, 1fr); }
+    .post-body-grid .prose { max-width: 100%; }
+    .post-body-grid .post-toc { display: none; }
+
+    .stage-intro {
+      max-width: 790px;
+      margin-bottom: 1.25rem;
+    }
+
+    .regression-demo {
+      margin: 1.5rem 0 3.5rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #f8fafc;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .demo-panels {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .demo-panel {
+      min-width: 0;
+      padding: 0.85rem;
+      background: #ffffff;
+    }
+
+    .panel-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 0.55rem;
+    }
+
+    .panel-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .panel-hint {
+      color: var(--faint);
+      font-size: 0.66rem;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .view-button {
+      padding: 0.3rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #f8fafc;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.65rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .view-button.active {
+      border-color: var(--accent);
+      background: rgba(2, 132, 199, 0.08);
+      color: var(--accent);
+    }
+
+    .demo-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .demo-canvas.rotatable-surface { cursor: grab; }
+    .demo-canvas.dragging-surface { cursor: grabbing; }
+
+    .demo-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: end;
+      padding: 1rem 1.1rem;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .demo-controls.two-parameters {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    }
+
+    .parameter-control {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .parameter-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .parameter-header strong {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fixed-parameter {
+      color: var(--faint);
+      font-size: 0.69rem;
+    }
+
+    .parameter-control input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .demo-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .demo-button {
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #ffffff;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.7rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .demo-button:hover {
+      border-color: rgba(2, 132, 199, 0.4);
+      color: var(--text);
+    }
+
+    .demo-button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .demo-stats {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      border-top: 1px solid var(--border);
+      background: var(--border);
+    }
+
+    .demo-stat {
+      min-width: 0;
+      padding: 0.75rem 0.9rem;
+      background: #ffffff;
+    }
+
+    .demo-stat-label {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--faint);
+      font-size: 0.61rem;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .demo-stat-value {
+      display: block;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .equation-value { color: var(--accent); }
+
+    .shared-data-note {
+      margin: -2rem 0 3rem;
+      padding: 0.75rem 0.9rem;
+      border-left: 3px solid var(--accent);
+      background: rgba(2, 132, 199, 0.05);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 820px) {
+      .demo-panels { grid-template-columns: 1fr; }
+      .demo-controls,
+      .demo-controls.two-parameters { grid-template-columns: 1fr 1fr; }
+      .demo-buttons { grid-column: 1 / -1; justify-content: flex-start; }
+    }
+
+    @media (max-width: 560px) {
+      .demo-controls,
+      .demo-controls.two-parameters { grid-template-columns: 1fr; }
+      .demo-buttons { grid-column: auto; }
+      .demo-stats { grid-template-columns: 1fr 1fr; }
+      .panel-title-row { align-items: flex-start; }
+    }
+  </style>
+  <script defer src="../assets/js/regression-loss-demo.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Home</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-dropdown">
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#blog">Blog</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../cv.html" class="btn-nav">Resume</a>
+</div>
+
+<div class="container post-layout">
+  <div class="post-header">
+    <p class="section-label">Interactive Explainer</p>
+    <h1 class="post-title">What Does Linear Regression Minimize?</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">August 28, 2026</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Regression</span>
+        <span class="blog-tag">Optimization</span>
+        <span class="blog-tag">Statistics</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+    <p class="stage-intro">
+      Fitting a regression line means choosing a slope and an intercept. The three demonstrations below
+      separate those choices before combining them into one loss surface.
+    </p>
+
+    <h2>Stage 1: Change the Slope</h2>
+    <p class="stage-intro">
+      The intercept stays fixed while the slope rotates the line. Each possible slope maps to one point
+      on the mean squared error parabola.
+    </p>
+
+    <div class="regression-demo" data-regression-demo data-mode="slope">
+      <div class="demo-panels">
+        <section class="demo-panel">
+          <div class="panel-title-row">
+            <h3 class="panel-title">Data space</h3>
+            <span class="panel-hint">Intercept fixed at its best value</span>
+          </div>
+          <canvas class="demo-canvas" data-canvas="data" width="620" height="430" aria-label="Data and fitted line while changing slope"></canvas>
+        </section>
+        <section class="demo-panel">
+          <div class="panel-title-row">
+            <h3 class="panel-title" data-role="loss-title">Error versus slope</h3>
+          </div>
+          <canvas class="demo-canvas" data-canvas="loss" width="620" height="430" aria-label="Mean squared error as a function of slope"></canvas>
+        </section>
+      </div>
+      <div class="demo-controls">
+        <label class="parameter-control">
+          <span class="parameter-header"><span>Slope, b<sub>1</sub></span><strong data-role="slope-value">0.00</strong></span>
+          <input data-role="slope-slider" type="range" min="0" max="1" value="0" step="0.01">
+        </label>
+        <div class="demo-buttons">
+          <button class="demo-button" data-action="new-data" type="button">New shared data</button>
+          <button class="demo-button" data-action="reset" type="button">Reset slope</button>
+          <button class="demo-button primary" data-action="best-fit" type="button">Best slope</button>
+        </div>
+      </div>
+      <div class="demo-stats">
+        <div class="demo-stat"><span class="demo-stat-label">Current line</span><span class="demo-stat-value equation-value" data-role="equation"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Current MSE</span><span class="demo-stat-value" data-role="current-mse"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Minimum MSE</span><span class="demo-stat-value" data-role="minimum-mse"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Distance from minimum</span><span class="demo-stat-value" data-role="mse-gap"></span></div>
+      </div>
+    </div>
+
+    <h2>Stage 2: Change the Intercept</h2>
+    <p class="stage-intro">
+      Now the slope stays fixed while the intercept moves the line vertically. The error again forms a
+      parabola, with the best intercept at its lowest point.
+    </p>
+
+    <div class="regression-demo" data-regression-demo data-mode="intercept">
+      <div class="demo-panels">
+        <section class="demo-panel">
+          <div class="panel-title-row">
+            <h3 class="panel-title">Data space</h3>
+            <span class="panel-hint">Slope fixed at its best value</span>
+          </div>
+          <canvas class="demo-canvas" data-canvas="data" width="620" height="430" aria-label="Data and fitted line while changing intercept"></canvas>
+        </section>
+        <section class="demo-panel">
+          <div class="panel-title-row">
+            <h3 class="panel-title" data-role="loss-title">Error versus intercept</h3>
+          </div>
+          <canvas class="demo-canvas" data-canvas="loss" width="620" height="430" aria-label="Mean squared error as a function of intercept"></canvas>
+        </section>
+      </div>
+      <div class="demo-controls">
+        <label class="parameter-control">
+          <span class="parameter-header"><span>Intercept, b<sub>0</sub></span><strong data-role="intercept-value">0.00</strong></span>
+          <input data-role="intercept-slider" type="range" min="0" max="1" value="0" step="0.01">
+        </label>
+        <div class="demo-buttons">
+          <button class="demo-button" data-action="new-data" type="button">New shared data</button>
+          <button class="demo-button" data-action="reset" type="button">Reset intercept</button>
+          <button class="demo-button primary" data-action="best-fit" type="button">Best intercept</button>
+        </div>
+      </div>
+      <div class="demo-stats">
+        <div class="demo-stat"><span class="demo-stat-label">Current line</span><span class="demo-stat-value equation-value" data-role="equation"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Current MSE</span><span class="demo-stat-value" data-role="current-mse"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Minimum MSE</span><span class="demo-stat-value" data-role="minimum-mse"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Distance from minimum</span><span class="demo-stat-value" data-role="mse-gap"></span></div>
+      </div>
+    </div>
+
+    <h2>Stage 3: Fit Slope and Intercept Together</h2>
+    <p class="stage-intro">
+      Both parameters are free in the final view. The two parabolas become a quadratic bowl, and every
+      slope-intercept pair corresponds to one point on its surface.
+    </p>
+
+    <div class="regression-demo" data-regression-demo data-mode="both">
+      <div class="demo-panels">
+        <section class="demo-panel">
+          <div class="panel-title-row">
+            <h3 class="panel-title">Data space</h3>
+            <span class="panel-hint">Both parameters are adjustable</span>
+          </div>
+          <canvas class="demo-canvas" data-canvas="data" width="620" height="430" aria-label="Data and fitted line while changing slope and intercept"></canvas>
+        </section>
+        <section class="demo-panel">
+          <div class="panel-title-row">
+            <h3 class="panel-title" data-role="loss-title">Error surface</h3>
+            <div class="view-toggle" aria-label="Loss surface view">
+              <button class="view-button active" type="button" data-view="surface">3D surface</button>
+              <button class="view-button" type="button" data-view="contour">Contours</button>
+              <button class="view-button" type="button" data-action="reset-view" title="Reset 3D camera">Reset view</button>
+            </div>
+          </div>
+          <canvas class="demo-canvas" data-canvas="loss" width="620" height="430" aria-label="Regression error surface over slope and intercept"></canvas>
+        </section>
+      </div>
+      <div class="demo-controls two-parameters">
+        <label class="parameter-control">
+          <span class="parameter-header"><span>Slope, b<sub>1</sub></span><strong data-role="slope-value">0.00</strong></span>
+          <input data-role="slope-slider" type="range" min="0" max="1" value="0" step="0.01">
+        </label>
+        <label class="parameter-control">
+          <span class="parameter-header"><span>Intercept, b<sub>0</sub></span><strong data-role="intercept-value">0.00</strong></span>
+          <input data-role="intercept-slider" type="range" min="0" max="1" value="0" step="0.01">
+        </label>
+        <div class="demo-buttons">
+          <button class="demo-button" data-action="new-data" type="button">New shared data</button>
+          <button class="demo-button" data-action="reset" type="button">Reset both</button>
+          <button class="demo-button primary" data-action="best-fit" type="button">Best fit</button>
+        </div>
+      </div>
+      <div class="demo-stats">
+        <div class="demo-stat"><span class="demo-stat-label">Current line</span><span class="demo-stat-value equation-value" data-role="equation"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Current MSE</span><span class="demo-stat-value" data-role="current-mse"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Minimum MSE</span><span class="demo-stat-value" data-role="minimum-mse"></span></div>
+        <div class="demo-stat"><span class="demo-stat-label">Distance from minimum</span><span class="demo-stat-value" data-role="mse-gap"></span></div>
+      </div>
+    </div>
+
+    <p class="shared-data-note">
+      All three demonstrations use the same points. Choosing <strong>New shared data</strong> in any
+      section updates and resets all three so the comparisons remain consistent.
+    </p>
+
+    <h2>Putting the Views Together</h2>
+    <p class="stage-intro">
+      Every move in parameter space changes the fitted line. That changes the residuals in data space,
+      and their squared values determine the height of the error curve or surface.
+    </p>
+  </article>
+
+  <aside class="post-toc">
+    <div class="toc-label">In this post</div>
+    <ul id="toc-list"></ul>
+  </aside>
+  </div>
+
+  <div class="post-nav">
+    <a href="information-entropy-randomness.html" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous post
+    </a>
+    <a href="../index.html#blog" class="btn btn-secondary">Back to all posts</a>
+  </div>
+</div>
+
+</body>
+</html>
