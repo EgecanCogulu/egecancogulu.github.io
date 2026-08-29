@@ -56,7 +56,7 @@
     const { left, right, top, bottom } = bounds;
     const { xMin, xMax, yMin, yMax, xTicks, yTicks, xLabel, yLabel } = options;
 
-    ctx.font = '11px Inter, Arial, sans-serif';
+    ctx.font = '13px Inter, Arial, sans-serif';
     ctx.lineWidth = 1;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -92,7 +92,7 @@
     ctx.stroke();
 
     ctx.fillStyle = '#475569';
-    ctx.font = '12px Inter, Arial, sans-serif';
+    ctx.font = '14px Inter, Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(xLabel, (left + right) / 2, bottom + 39);
     ctx.save();
@@ -219,7 +219,7 @@
       ctx.restore();
 
       ctx.fillStyle = COLORS.muted;
-      ctx.font = '700 10px Inter, Arial, sans-serif';
+      ctx.font = '700 12px Inter, Arial, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText('Solid sloped lines compare outcomes at the same intent', bounds.left + 6, bounds.top + 12);
 
@@ -240,7 +240,7 @@
         ctx.stroke();
         ctx.restore();
         ctx.fillStyle = group.color;
-        ctx.font = '700 10px Inter, Arial, sans-serif';
+        ctx.font = '700 12px Inter, Arial, sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(group.label, bounds.right - 4, y - 7);
       });
@@ -279,14 +279,14 @@
         ctx.fillRect(centers[index] - barWidth / 2, Math.min(zeroY, valueY), barWidth, Math.max(2, Math.abs(valueY - zeroY)));
         pointMarker(ctx, centers[index], valueY, colors[index], 4.5);
         ctx.fillStyle = COLORS.text;
-        ctx.font = '700 13px Inter, Arial, sans-serif';
+        ctx.font = '700 15px Inter, Arial, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(formatSigned(value), centers[index], value >= 0 ? valueY - 12 : valueY + 14);
         ctx.fillStyle = COLORS.muted;
-        ctx.font = '700 11px Inter, Arial, sans-serif';
+        ctx.font = '700 13px Inter, Arial, sans-serif';
         ctx.fillText(labels[index].main, centers[index], bounds.bottom + 16);
         ctx.fillStyle = COLORS.faint;
-        ctx.font = '10px Inter, Arial, sans-serif';
+        ctx.font = '12px Inter, Arial, sans-serif';
         ctx.fillText(labels[index].detail, centers[index], bounds.bottom + 32);
       });
     }
@@ -399,7 +399,7 @@
       ctx.moveTo(bounds.left, axisY);
       ctx.lineTo(bounds.right, axisY);
       ctx.stroke();
-      ctx.font = '10px Inter, Arial, sans-serif';
+      ctx.font = '12px Inter, Arial, sans-serif';
       ctx.textAlign = 'center';
       [0, 0.25, 0.5, 0.75, 1].forEach(value => {
         const x = map(value, 0, 1, bounds.left, bounds.right);
@@ -412,7 +412,7 @@
         ctx.fillText(value.toFixed(value === 0 || value === 1 ? 0 : 2), x, axisY + 17);
       });
       ctx.fillStyle = '#475569';
-      ctx.font = '11px Inter, Arial, sans-serif';
+      ctx.font = '13px Inter, Arial, sans-serif';
       ctx.fillText('Propensity score: probability of receiving treatment', (bounds.left + bounds.right) / 2, axisY + 36);
     }
 
@@ -427,19 +427,19 @@
       const controlY = 315;
 
       ctx.fillStyle = COLORS.text;
-      ctx.font = '750 13px Inter, Arial, sans-serif';
+      ctx.font = '750 15px Inter, Arial, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText('BEFORE MATCHING', leftBounds.left, 32);
       ctx.fillText('AFTER MATCHING', rightBounds.left, 32);
       ctx.fillStyle = COLORS.faint;
-      ctx.font = '11px Inter, Arial, sans-serif';
+      ctx.font = '13px Inter, Arial, sans-serif';
       ctx.fillText('The full observed groups', leftBounds.left, 50);
       ctx.fillText(hasMatched ? 'Only comparable treated-control pairs' : 'Choose Match nearest neighbors', rightBounds.left, 50);
 
       [leftBounds, rightBounds].forEach(bounds => {
         drawScoreAxis(ctx, bounds);
         ctx.fillStyle = COLORS.orange;
-        ctx.font = '700 11px Inter, Arial, sans-serif';
+        ctx.font = '700 13px Inter, Arial, sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText('Treated', bounds.left, 91);
         ctx.fillStyle = COLORS.blue;
@@ -458,7 +458,7 @@
 
       if (!hasMatched) {
         ctx.fillStyle = COLORS.faint;
-        ctx.font = '12px Inter, Arial, sans-serif';
+        ctx.font = '14px Inter, Arial, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('No pairs selected yet', (rightBounds.left + rightBounds.right) / 2, (rightBounds.top + rightBounds.bottom) / 2);
         return;
@@ -599,7 +599,7 @@
       ctx.stroke();
       ctx.restore();
       ctx.fillStyle = COLORS.muted;
-      ctx.font = '700 11px Inter, Arial, sans-serif';
+      ctx.font = '700 13px Inter, Arial, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText('TREATMENT', interventionX + 9, bounds.top + 13);
 
@@ -611,7 +611,7 @@
 
       const lastControl = series.control.at(-1);
       const lastTreated = series.treated.at(-1);
-      ctx.font = '700 12px Inter, Arial, sans-serif';
+      ctx.font = '700 14px Inter, Arial, sans-serif';
       ctx.textAlign = 'right';
       ctx.fillStyle = COLORS.orange;
       ctx.fillText('Treated', xScale(lastTreated.x) - 7, yScale(lastTreated.y) - 12);
@@ -737,7 +737,7 @@
       ctx.stroke();
       ctx.restore();
       ctx.fillStyle = COLORS.muted;
-      ctx.font = '700 11px Inter, Arial, sans-serif';
+      ctx.font = '700 13px Inter, Arial, sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText('TREATMENT', interventionX + 9, bounds.top + 13);
 
@@ -751,7 +751,7 @@
       linePath(ctx, treated.map((value, time) => ({ x: time, y: value })), xScale, yScale, COLORS.text, 3.5);
       treated.forEach((value, time) => pointMarker(ctx, xScale(time), yScale(value), COLORS.text, 3.8));
 
-      ctx.font = '700 12px Inter, Arial, sans-serif';
+      ctx.font = '700 14px Inter, Arial, sans-serif';
       ctx.textAlign = 'right';
       ctx.fillStyle = COLORS.text;
       ctx.fillText('Treated', xScale(19) - 8, yScale(treated[19]) - 12);
