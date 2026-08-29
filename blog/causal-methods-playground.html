@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive experiments with confounding, difference-in-differences, and synthetic control.">
+  <title>Causal Inference Playground | Ege Cogulu</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    .post-body-grid { grid-template-columns: minmax(0, 1fr); }
+    .post-body-grid .prose { max-width: 100%; }
+    .post-body-grid .post-toc { display: none; }
+
+    .draft-intro,
+    .method-intro {
+      max-width: 800px;
+    }
+
+    .method-section {
+      margin: 3.5rem 0 5rem;
+    }
+
+    .method-kicker {
+      display: inline-block;
+      margin-bottom: 0.45rem;
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .causal-demo {
+      margin-top: 1.4rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #f8fafc;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
+    }
+
+    .demo-panels {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .demo-panel {
+      min-width: 0;
+      padding: 0.9rem;
+      background: #ffffff;
+    }
+
+    .demo-panel.wide { grid-column: 1 / -1; }
+
+    .panel-title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 24px;
+      margin-bottom: 0.55rem;
+    }
+
+    .panel-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 0.74rem;
+      font-weight: 750;
+      letter-spacing: 0.055em;
+      text-transform: uppercase;
+    }
+
+    .panel-hint {
+      color: var(--faint);
+      font-size: 0.66rem;
+      text-align: right;
+    }
+
+    .demo-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .demo-controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+      gap: 18px;
+      align-items: end;
+      padding: 1rem 1.1rem;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .demo-controls.weights {
+      grid-template-columns: repeat(4, minmax(95px, 1fr));
+    }
+
+    .parameter-control {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .parameter-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .parameter-header strong {
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .parameter-control input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .demo-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .demo-button {
+      padding: 0.5rem 0.72rem;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #ffffff;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.69rem;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .demo-button:hover {
+      border-color: rgba(2, 132, 199, 0.45);
+      color: var(--text);
+    }
+
+    .demo-button.primary,
+    .demo-button.active {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .control-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0.85rem 1.1rem;
+      border-top: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
+    .demo-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      border-top: 1px solid var(--border);
+      background: var(--border);
+    }
+
+    .demo-stat {
+      min-width: 0;
+      padding: 0.78rem 0.9rem;
+      background: #ffffff;
+    }
+
+    .demo-stat-label {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--faint);
+      font-size: 0.61rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .demo-stat-value {
+      display: block;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 750;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .demo-stat-value.accent { color: var(--accent); }
+    .demo-stat-value.good { color: #0f766e; }
+    .demo-stat-value.warn { color: #ea580c; }
+
+    .aha-box {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 0.9rem 1.05rem;
+      border-top: 1px solid rgba(2, 132, 199, 0.16);
+      background: rgba(2, 132, 199, 0.055);
+      color: var(--muted);
+      font-size: 0.79rem;
+      line-height: 1.55;
+    }
+
+    .aha-label {
+      color: var(--accent);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .causal-story {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      margin: 1.25rem 0;
+    }
+
+    .story-card,
+    .action-guide {
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #ffffff;
+    }
+
+    .story-card h3,
+    .action-guide h3 {
+      margin: 0 0 0.55rem;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 750;
+      letter-spacing: 0.045em;
+      text-transform: uppercase;
+    }
+
+    .story-card p,
+    .action-guide p,
+    .action-guide li {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .story-card p { margin: 0.6rem 0 0; }
+
+    .causal-dag {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin-top: 0.3rem;
+    }
+
+    .action-guide ol {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+
+    .action-guide li { margin: 0.34rem 0; }
+
+    .plain-definition {
+      margin: 0.8rem 0 0;
+      padding: 0.75rem 0.9rem;
+      border-left: 3px solid var(--accent);
+      background: rgba(2, 132, 199, 0.05);
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .calculation-card {
+      margin: 0 0 1.35rem;
+      padding: 1rem 1.1rem;
+      border: 1px solid rgba(2, 132, 199, 0.2);
+      border-radius: 11px;
+      background: rgba(2, 132, 199, 0.045);
+    }
+
+    .calculation-card h3 {
+      margin: 0 0 0.45rem;
+      color: var(--text);
+      font-size: 0.8rem;
+    }
+
+    .calculation-card p {
+      margin: 0.42rem 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.55;
+    }
+
+    .model-equation {
+      display: block;
+      margin: 0.7rem 0;
+      padding: 0.72rem 0.85rem;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #ffffff;
+      color: var(--text);
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .diagram-caption {
+      margin-top: 0.45rem;
+      color: var(--faint);
+      font-size: 0.69rem;
+      line-height: 1.45;
+    }
+
+    .demo-stats.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .weight-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px 14px;
+      color: var(--faint);
+      font-size: 0.67rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 820px) {
+      .causal-story { grid-template-columns: 1fr; }
+      .demo-panels { grid-template-columns: 1fr; }
+      .demo-panel.wide { grid-column: auto; }
+      .demo-controls { grid-template-columns: 1fr 1fr; }
+      .demo-controls.weights { grid-template-columns: 1fr 1fr; }
+      .demo-buttons { grid-column: 1 / -1; justify-content: flex-start; }
+    }
+
+    @media (max-width: 560px) {
+      .demo-controls,
+      .demo-controls.weights,
+      .demo-stats,
+      .demo-stats.four { grid-template-columns: 1fr; }
+      .demo-buttons { grid-column: auto; }
+      .panel-title-row { align-items: flex-start; }
+      .panel-hint { max-width: 48%; }
+    }
+  </style>
+  <script defer src="../assets/js/causal-methods-demo.js"></script>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Home</a>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#blog">Blog</a></li>
+      <li><a href="../index.html#publications">Publications</a></li>
+      <li><a href="../cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-dropdown">
+  <a href="../index.html#about">About</a>
+  <a href="../index.html#experience">Experience</a>
+  <a href="../index.html#blog">Blog</a>
+  <a href="../index.html#publications">Publications</a>
+  <a href="../cv.html" class="btn-nav">Resume</a>
+</div>
+
+<div class="container post-layout">
+  <div class="post-header">
+    <p class="section-label">Interactive Explainer</p>
+    <h1 class="post-title">Causal Inference Playground</h1>
+    <div class="post-meta">
+      <span class="post-meta-date">August 29, 2026</span>
+      <span>&middot;</span>
+      <div class="blog-tags" style="margin:0;">
+        <span class="blog-tag">Causal Inference</span>
+        <span class="blog-tag">Counterfactuals</span>
+        <span class="blog-tag">Interactive</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="post-body-grid">
+  <article class="prose">
+    <p class="draft-intro">
+      Causal methods ask versions of the same impossible question: what would have happened to the same
+      people, market, or warehouse without the treatment? These four experiments make that missing
+      counterfactual visible because, inside a simulation, we know the truth.
+    </p>
+
+    <section class="method-section" id="confounding">
+      <span class="method-kicker">Experiment 1</span>
+      <h2>The Confounding Machine</h2>
+      <p class="method-intro">
+        Customers with stronger purchase intent are more likely to see an advertisement and more likely
+        to buy. Turn up targeting and watch an effect appear even when the ad itself does nothing.
+      </p>
+
+      <div class="causal-story">
+        <div class="story-card">
+          <h3>What creates the confusion?</h3>
+          <svg class="causal-dag" viewBox="0 0 520 210" role="img" aria-label="Purchase intent affects both ad exposure and purchase outcome, while ad exposure may affect purchase outcome">
+            <defs>
+              <marker id="causal-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path>
+              </marker>
+            </defs>
+            <path d="M155 70 C220 30 290 30 355 70" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#causal-arrow)"></path>
+            <path d="M145 92 C190 135 210 150 245 157" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#causal-arrow)"></path>
+            <path d="M365 92 C330 132 310 148 278 157" fill="none" stroke="#0284c7" stroke-width="3" marker-end="url(#causal-arrow)"></path>
+            <rect x="34" y="48" width="130" height="48" rx="10" fill="#f8fafc" stroke="#94a3b8"></rect>
+            <rect x="355" y="48" width="130" height="48" rx="10" fill="#fff7ed" stroke="#ea580c"></rect>
+            <rect x="194" y="150" width="142" height="48" rx="10" fill="#eff6ff" stroke="#0284c7"></rect>
+            <text x="99" y="77" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Purchase intent</text>
+            <text x="420" y="77" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Ad exposure</text>
+            <text x="265" y="179" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Purchase outcome</text>
+          </svg>
+          <p>Purchase intent is a confounder because it influences both who sees the ad and who buys.</p>
+        </div>
+        <div class="action-guide">
+          <h3>Try this</h3>
+          <ol>
+            <li>Keep the <strong>true ad effect at zero</strong> and choose <strong>Random assignment</strong>. The exposed and unexposed customers overlap.</li>
+            <li>Choose <strong>Strong targeting</strong>. High-intent customers now receive more ads, and the naive estimate jumps.</li>
+            <li>Compare the orange naive bar with the blue adjusted bar. Adjustment compares customers at similar levels of purchase intent.</li>
+          </ol>
+          <p class="plain-definition"><strong>Naive estimate:</strong> average outcome among everyone exposed minus everyone unexposed.<br><strong>Adjusted estimate:</strong> the exposure difference after accounting for purchase intent.</p>
+        </div>
+      </div>
+
+      <div class="calculation-card">
+        <h3>How is the adjusted estimate calculated?</h3>
+        <p>This demo fits one linear model using every customer:</p>
+        <code class="model-equation">Purchase outcome = b<sub>0</sub> + &tau; &times; Ad exposure + b<sub>1</sub> &times; Purchase intent + error</code>
+        <p>The coefficient <strong>&tau;</strong> is the adjusted estimate. It compares an exposed and an unexposed customer while holding purchase intent fixed. In the chart below, the two sloped lines are those fitted same-intent comparisons. Their vertical separation is &tau;. The dashed horizontal averages ignore intent and produce the naive estimate.</p>
+      </div>
+
+      <div class="causal-demo" data-demo="confounding">
+        <div class="demo-panels">
+          <section class="demo-panel">
+            <div class="panel-title-row">
+              <h3 class="panel-title">Observed customers</h3>
+              <span class="panel-hint">Orange saw the ad, blue did not</span>
+            </div>
+            <canvas class="demo-canvas" data-canvas="confounding-data" width="620" height="410" aria-label="Customer outcomes by purchase intent and advertisement exposure"></canvas>
+          </section>
+          <section class="demo-panel">
+            <div class="panel-title-row">
+              <h3 class="panel-title">What is the effect of the ad?</h3>
+              <span class="panel-hint">Observed comparison versus adjusted comparison</span>
+            </div>
+            <canvas class="demo-canvas" data-canvas="confounding-estimates" width="620" height="410" aria-label="True, naive, and adjusted treatment effect estimates"></canvas>
+          </section>
+        </div>
+        <div class="demo-controls">
+          <label class="parameter-control">
+            <span class="parameter-header"><span>True ad effect</span><strong data-value="true-effect">0.0</strong></span>
+            <input data-control="true-effect" type="range" min="-3" max="6" value="0" step="0.25">
+          </label>
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Targeting by purchase intent</span><strong data-value="confounding">2.5</strong></span>
+            <input data-control="confounding" type="range" min="0" max="3.5" value="2.5" step="0.1">
+          </label>
+          <div class="demo-buttons">
+            <button class="demo-button" type="button" data-action="random-assignment">Random assignment</button>
+            <button class="demo-button primary" type="button" data-action="strong-targeting">Strong targeting</button>
+          </div>
+        </div>
+        <div class="demo-stats">
+          <div class="demo-stat"><span class="demo-stat-label">True causal effect</span><span class="demo-stat-value good" data-stat="confounding-true"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Naive: exposed minus unexposed</span><span class="demo-stat-value warn" data-stat="confounding-naive"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Adjusted: control for intent</span><span class="demo-stat-value accent" data-stat="confounding-adjusted"></span></div>
+        </div>
+        <div class="aha-box"><span class="aha-label">Watch for</span><span data-insight="confounding"></span></div>
+      </div>
+    </section>
+
+    <section class="method-section" id="propensity-score-matching">
+      <span class="method-kicker">Experiment 2</span>
+      <h2>Propensity Score Matching: Choose Better Comparisons</h2>
+      <p class="method-intro">
+        Treated and untreated customers can look very different before matching. A propensity score
+        compresses their observed characteristics into the probability of receiving treatment, then
+        matching compares customers with similar probabilities.
+      </p>
+
+      <div class="causal-story">
+        <div class="story-card">
+          <h3>Problem and example</h3>
+          <svg class="causal-dag" viewBox="0 0 520 210" role="img" aria-label="Customer history affects both offer exposure and purchasing, while offer exposure may affect purchasing">
+            <defs>
+              <marker id="matching-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path></marker>
+            </defs>
+            <path d="M155 70 C220 30 290 30 355 70" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#matching-arrow)"></path>
+            <path d="M145 92 C190 135 210 150 245 157" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#matching-arrow)"></path>
+            <path d="M365 92 C330 132 310 148 278 157" fill="none" stroke="#0284c7" stroke-width="3" marker-end="url(#matching-arrow)"></path>
+            <rect x="30" y="48" width="138" height="48" rx="10" fill="#f8fafc" stroke="#94a3b8"></rect>
+            <rect x="355" y="48" width="130" height="48" rx="10" fill="#fff7ed" stroke="#ea580c"></rect>
+            <rect x="194" y="150" width="142" height="48" rx="10" fill="#eff6ff" stroke="#0284c7"></rect>
+            <text x="99" y="77" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Customer history</text>
+            <text x="420" y="77" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Offer exposure</text>
+            <text x="265" y="179" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Purchase outcome</text>
+          </svg>
+          <p>An e-commerce company targets an offer using browsing and purchase history. Matching asks whether each exposed customer has an unexposed customer with a similar probability of receiving that offer.</p>
+        </div>
+        <div class="action-guide">
+          <h3>Try this</h3>
+          <ol>
+            <li>Start with <strong>Good overlap</strong> and notice that the naive estimate is too large.</li>
+            <li>Choose <strong>Match nearest neighbors</strong>. The matched estimate should move toward the true effect.</li>
+            <li>Choose <strong>Poor overlap</strong> and match again. The remaining pairs may be credible, but many treated customers have no comparable control.</li>
+          </ol>
+          <p class="plain-definition"><strong>What the score does:</strong> customers with many observed characteristics can still be compared on one number, their estimated probability of receiving treatment.</p>
+        </div>
+      </div>
+
+      <div class="causal-demo" data-demo="matching">
+        <div class="demo-panels">
+          <section class="demo-panel wide">
+            <div class="panel-title-row">
+              <h3 class="panel-title">Who is being compared?</h3>
+              <span class="panel-hint">Each horizontal position is a propensity score</span>
+            </div>
+            <canvas class="demo-canvas" data-canvas="matching" width="1240" height="500" aria-label="Treated and control customers before and after propensity score matching"></canvas>
+          </section>
+        </div>
+        <div class="demo-controls">
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Selection into treatment</span><strong data-value="matching-selection">1.4</strong></span>
+            <input data-control="matching-selection" type="range" min="0" max="4" value="1.4" step="0.1">
+          </label>
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Maximum matching distance</span><strong data-value="matching-caliper">0.08</strong></span>
+            <input data-control="matching-caliper" type="range" min="0.01" max="0.25" value="0.08" step="0.01">
+          </label>
+          <div class="demo-buttons">
+            <button class="demo-button" type="button" data-action="good-overlap">Good overlap</button>
+            <button class="demo-button" type="button" data-action="poor-overlap">Poor overlap</button>
+            <button class="demo-button primary" type="button" data-action="run-matching">Match nearest neighbors</button>
+          </div>
+        </div>
+        <div class="demo-stats four">
+          <div class="demo-stat"><span class="demo-stat-label">True effect</span><span class="demo-stat-value good" data-stat="matching-true"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Naive difference</span><span class="demo-stat-value warn" data-stat="matching-naive"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Matched estimate</span><span class="demo-stat-value accent" data-stat="matching-estimate"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Treated customers matched</span><span class="demo-stat-value" data-stat="matching-count"></span></div>
+        </div>
+        <div class="aha-box"><span class="aha-label">Watch for</span><span data-insight="matching"></span></div>
+      </div>
+    </section>
+
+    <section class="method-section" id="difference-in-differences">
+      <span class="method-kicker">Experiment 3</span>
+      <h2>Difference-in-Differences Laboratory</h2>
+      <p class="method-intro">
+        One market receives a new policy while another does not. Their starting levels can differ, but
+        DiD needs their untreated trends to remain comparable.
+      </p>
+
+      <div class="causal-story">
+        <div class="story-card">
+          <h3>Problem and example</h3>
+          <svg class="causal-dag" viewBox="0 0 520 225" role="img" aria-label="Market differences affect policy adoption and outcomes, time affects outcomes, and the policy may affect outcomes">
+            <defs>
+              <marker id="did-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path></marker>
+            </defs>
+            <path d="M155 62 C220 25 295 25 365 62" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#did-arrow)"></path>
+            <path d="M140 86 C180 135 215 160 250 170" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#did-arrow)"></path>
+            <path d="M390 88 C355 135 320 157 287 170" fill="none" stroke="#0284c7" stroke-width="3" marker-end="url(#did-arrow)"></path>
+            <path d="M96 172 C145 189 185 191 223 184" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#did-arrow)"></path>
+            <rect x="25" y="42" width="145" height="48" rx="10" fill="#f8fafc" stroke="#94a3b8"></rect>
+            <rect x="365" y="42" width="130" height="48" rx="10" fill="#fff7ed" stroke="#ea580c"></rect>
+            <rect x="212" y="166" width="142" height="48" rx="10" fill="#eff6ff" stroke="#0284c7"></rect>
+            <rect x="32" y="152" width="72" height="42" rx="10" fill="#f8fafc" stroke="#94a3b8"></rect>
+            <text x="97" y="71" text-anchor="middle" font-family="Inter, Arial" font-size="14" font-weight="700" fill="#0f172a">Market differences</text>
+            <text x="430" y="71" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">New policy</text>
+            <text x="283" y="195" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Market outcome</text>
+            <text x="68" y="178" text-anchor="middle" font-family="Inter, Arial" font-size="15" font-weight="700" fill="#0f172a">Time</text>
+          </svg>
+          <p>Suppose one delivery market adopts a routing policy while another does not. DiD removes stable market differences and common changes over time. Its key assumption is that, without the policy, both markets would have followed parallel trends.</p>
+        </div>
+        <div class="action-guide">
+          <h3>Try this</h3>
+          <ol>
+            <li>Keep <strong>Parallel trends</strong>. Compare the raw post-period gap with the smaller DiD estimate.</li>
+            <li>Choose <strong>Reveal counterfactual</strong>. The hidden no-policy path runs parallel to the control and confirms the estimate.</li>
+            <li>Choose <strong>Break the assumption</strong>. Reveal the counterfactual again and watch DiD mistake the diverging trend for part of the policy effect.</li>
+          </ol>
+          <p class="plain-definition"><strong>What DiD subtracts:</strong> the treated market's before-to-after change minus the control market's before-to-after change.</p>
+        </div>
+      </div>
+
+      <div class="causal-demo" data-demo="did">
+        <div class="demo-panels">
+          <section class="demo-panel wide">
+            <div class="panel-title-row">
+              <h3 class="panel-title">Outcomes over time</h3>
+              <span class="panel-hint">Treatment begins at the vertical line</span>
+            </div>
+            <canvas class="demo-canvas" data-canvas="did" width="1240" height="470" aria-label="Treated and control outcomes before and after an intervention"></canvas>
+          </section>
+        </div>
+        <div class="demo-controls">
+          <label class="parameter-control">
+            <span class="parameter-header"><span>True treatment effect</span><strong data-value="did-effect">4.0</strong></span>
+            <input data-control="did-effect" type="range" min="-4" max="8" value="4" step="0.25">
+          </label>
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Difference in untreated trends</span><strong data-value="trend-difference">0.0</strong></span>
+            <input data-control="trend-difference" type="range" min="-1" max="1" value="0" step="0.05">
+          </label>
+          <div class="demo-buttons">
+            <button class="demo-button primary" type="button" data-action="parallel-trends">Parallel trends</button>
+            <button class="demo-button" type="button" data-action="break-trends">Break the assumption</button>
+          </div>
+        </div>
+        <div class="control-footer">
+          <div class="weight-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#ea580c"></span>Treated market</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#64748b"></span>Control market</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#0f766e"></span>Hidden counterfactual</span>
+          </div>
+          <button class="demo-button" type="button" data-action="toggle-did-counterfactual">Reveal counterfactual</button>
+        </div>
+        <div class="demo-stats">
+          <div class="demo-stat"><span class="demo-stat-label">True effect</span><span class="demo-stat-value good" data-stat="did-true"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Post-period gap</span><span class="demo-stat-value warn" data-stat="did-gap"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">DiD estimate</span><span class="demo-stat-value accent" data-stat="did-estimate"></span></div>
+        </div>
+        <div class="aha-box"><span class="aha-label">Watch for</span><span data-insight="did"></span></div>
+      </div>
+    </section>
+
+    <section class="method-section" id="synthetic-control">
+      <span class="method-kicker">Experiment 4</span>
+      <h2>Synthetic Control: Build the Counterfactual</h2>
+      <p class="method-intro">
+        No single comparison market resembles the treated market. Mix four donor markets until their
+        weighted history does, then carry that synthetic comparison into the post-treatment period.
+      </p>
+
+      <div class="causal-story">
+        <div class="story-card">
+          <h3>Problem and example</h3>
+          <svg class="causal-dag" viewBox="0 0 520 230" role="img" aria-label="Donor markets combine into a synthetic counterfactual that is compared with the treated market after a policy">
+            <defs>
+              <marker id="synthetic-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path></marker>
+            </defs>
+            <path d="M148 66 C205 66 215 94 240 109" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#synthetic-arrow)"></path>
+            <path d="M148 154 C205 154 215 128 240 118" fill="none" stroke="#64748b" stroke-width="3" marker-end="url(#synthetic-arrow)"></path>
+            <path d="M376 112 L455 112" fill="none" stroke="#0284c7" stroke-width="3" marker-end="url(#synthetic-arrow)"></path>
+            <rect x="25" y="42" width="125" height="48" rx="10" fill="#f8fafc" stroke="#94a3b8"></rect>
+            <rect x="25" y="130" width="125" height="48" rx="10" fill="#f8fafc" stroke="#94a3b8"></rect>
+            <rect x="238" y="87" width="140" height="55" rx="10" fill="#eff6ff" stroke="#0284c7"></rect>
+            <rect x="452" y="87" width="58" height="55" rx="10" fill="#fff7ed" stroke="#ea580c"></rect>
+            <text x="87" y="71" text-anchor="middle" font-family="Inter, Arial" font-size="14" font-weight="700" fill="#0f172a">Donor markets</text>
+            <text x="87" y="159" text-anchor="middle" font-family="Inter, Arial" font-size="14" font-weight="700" fill="#0f172a">Donor weights</text>
+            <text x="308" y="110" text-anchor="middle" font-family="Inter, Arial" font-size="14" font-weight="700" fill="#0f172a">Synthetic no-policy</text>
+            <text x="308" y="127" text-anchor="middle" font-family="Inter, Arial" font-size="14" font-weight="700" fill="#0f172a">counterfactual</text>
+            <text x="481" y="110" text-anchor="middle" font-family="Inter, Arial" font-size="13" font-weight="700" fill="#0f172a">Gap</text>
+            <text x="481" y="127" text-anchor="middle" font-family="Inter, Arial" font-size="11" fill="#475569">effect</text>
+          </svg>
+          <p>Suppose one warehouse adopts a new automation system. No other warehouse is a convincing comparison by itself, so we combine several untreated warehouses to reproduce its earlier throughput.</p>
+        </div>
+        <div class="action-guide">
+          <h3>Try this</h3>
+          <ol>
+            <li>Begin with <strong>Equal weights</strong>. The synthetic line is close, but it misses parts of the pre-treatment history.</li>
+            <li>Move the four donor weights or choose <strong>Find best pre-fit</strong>. A credible counterfactual should track the treated warehouse before automation.</li>
+            <li>Choose <strong>Reveal truth</strong>. In this simulation, you can compare the synthetic estimate with the no-automation path that would be hidden in real data.</li>
+          </ol>
+          <p class="plain-definition"><strong>What synthetic control constructs:</strong> a weighted combination of untreated units that acts like the missing no-treatment version of the treated unit.</p>
+        </div>
+      </div>
+
+      <div class="causal-demo" data-demo="synthetic">
+        <div class="demo-panels">
+          <section class="demo-panel wide">
+            <div class="panel-title-row">
+              <h3 class="panel-title">Treated market and donor pool</h3>
+              <span class="panel-hint">Tune the donor weights before the intervention</span>
+            </div>
+            <canvas class="demo-canvas" data-canvas="synthetic" width="1240" height="500" aria-label="Treated market, donor markets, and weighted synthetic control over time"></canvas>
+          </section>
+        </div>
+        <div class="demo-controls weights">
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Market A</span><strong data-value="weight-a">25%</strong></span>
+            <input data-control="weight-a" type="range" min="0" max="100" value="25" step="1">
+          </label>
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Market B</span><strong data-value="weight-b">25%</strong></span>
+            <input data-control="weight-b" type="range" min="0" max="100" value="25" step="1">
+          </label>
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Market C</span><strong data-value="weight-c">25%</strong></span>
+            <input data-control="weight-c" type="range" min="0" max="100" value="25" step="1">
+          </label>
+          <label class="parameter-control">
+            <span class="parameter-header"><span>Market D</span><strong data-value="weight-d">25%</strong></span>
+            <input data-control="weight-d" type="range" min="0" max="100" value="25" step="1">
+          </label>
+        </div>
+        <div class="control-footer">
+          <div class="weight-legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#0f172a"></span>Treated market</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#0284c7"></span>Synthetic control</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#cbd5e1"></span>Donor markets</span>
+          </div>
+          <div class="demo-buttons">
+            <button class="demo-button" type="button" data-action="equal-weights">Equal weights</button>
+            <button class="demo-button primary" type="button" data-action="fit-weights">Find best pre-fit</button>
+            <button class="demo-button" type="button" data-action="toggle-synthetic-counterfactual">Reveal truth</button>
+          </div>
+        </div>
+        <div class="demo-stats">
+          <div class="demo-stat"><span class="demo-stat-label">Pre-period RMSE</span><span class="demo-stat-value accent" data-stat="synthetic-rmse"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">Estimated post effect</span><span class="demo-stat-value warn" data-stat="synthetic-effect"></span></div>
+          <div class="demo-stat"><span class="demo-stat-label">True post effect</span><span class="demo-stat-value good" data-stat="synthetic-true"></span></div>
+        </div>
+        <div class="aha-box"><span class="aha-label">Watch for</span><span data-insight="synthetic"></span></div>
+      </div>
+    </section>
+  </article>
+  </div>
+
+  <div class="post-nav">
+    <a href="regression-loss-surface.html" class="btn btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Regression explainer
+    </a>
+    <a href="../index.html#blog" class="btn btn-secondary">Back to all posts</a>
+  </div>
+</div>
+
+</body>
+</html>
