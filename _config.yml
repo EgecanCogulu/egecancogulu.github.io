@@ -282,6 +282,12 @@ defaults:
       share: false
 
 
+  # Unlisted interactive page
+  - scope:
+      path: "blog/three-body-orbits.html"
+    values:
+      sitemap: false
+
 # Sass/SCSS
 sass:
   sass_dir: _sass
