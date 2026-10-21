@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script defer src="/assets/js/analytics.js"></script>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="/files/favicon_simple.png">
+  <link rel="apple-touch-icon" href="/files/favicon_simple.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apps | Ege Cogulu</title>
+  <meta name="description" content="Practical apps built by Ege Cogulu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Home</a>
+    <ul class="nav-links">
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#experience">Experience</a></li>
+      <li><a href="index.html#blog">Blog</a></li>
+      <li><a href="apps.html">Apps</a></li>
+      <li><a href="index.html#publications">Publications</a></li>
+      <li><a href="cv.html" class="btn-nav">Resume</a></li>
+    </ul>
+    <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-dropdown">
+  <a href="index.html#about">About</a>
+  <a href="index.html#experience">Experience</a>
+  <a href="index.html#blog">Blog</a>
+  <a href="apps.html">Apps</a>
+  <a href="index.html#publications">Publications</a>
+  <a href="cv.html" class="btn-nav">Resume</a>
+</div>
+
+<main class="apps-page-main">
+  <div class="container">
+    <p class="section-label">Things I Build</p>
+    <h1 class="section-title">Apps</h1>
+    <p class="apps-page-intro">This page collects practical apps I build to explore ideas and solve everyday problems. Each project is designed to be useful on its own, with an emphasis on thoughtful details, privacy, and a pleasant experience.</p>
+
+    <article class="app-card">
+      <a class="app-card-icon" href="LetMeCook/" aria-label="Open Let Me Cook!">
+        <img src="LetMeCook/pwa-192x192.png" alt="Let Me Cook! app icon">
+      </a>
+      <div class="app-card-content">
+        <h3><a href="LetMeCook/">Let Me Cook!</a></h3>
+        <p>A private, local-first cookbook for keeping recipes, photos, and notes together. It works offline, includes cooking tools and timers, and can be installed on your phone.</p>
+        <div class="app-card-actions">
+          <a class="btn btn-primary" href="LetMeCook/">Open app <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </article>
+  </div>
+</main>
+
+<section id="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-name">Ege Cogulu</div>
+      <p class="footer-email">
+        <a href="mailto:egecancogulu@gmail.com">egecancogulu@gmail.com</a>
+        &nbsp;&middot;&nbsp; San Francisco Bay Area, CA
+      </p>
+      <div class="footer-socials">
+        <a href="https://github.com/EgecanCogulu" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px;">GitHub</a>
+        <a href="https://linkedin.com/in/egecan-cogulu" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px;">LinkedIn</a>
+        <a href="https://scholar.google.com/citations?user=YzKgnmAAAAAJ&amp;hl=en" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px;">Google Scholar</a>
+        <a href="cv.html" class="btn btn-ghost" style="font-size:0.8rem; padding:8px 16px;">Resume</a>
+      </div>
+      <p class="footer-legal">&copy; 2026 Egecan Cogulu. All rights reserved.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.background = window.scrollY > 20
+      ? 'rgba(240,244,248,0.97)'
+      : 'rgba(240,244,248,0.85)';
+  }, { passive: true });
+
+  const burger = document.querySelector('.nav-burger');
+  burger.addEventListener('click', () => {
+    const open = document.body.classList.toggle('nav-open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  document.querySelectorAll('.nav-dropdown a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.body.classList.remove('nav-open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+
+</body>
+</html>
