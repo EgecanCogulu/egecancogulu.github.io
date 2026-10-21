@@ -82,6 +82,15 @@
   gap: 18px;
 }
 
+.app-card + .app-card { margin-top: 24px; }
+.app-beta-badge {
+  display: inline-flex; margin-left: 10px; padding: 3px 9px;
+  border: 1px solid #d97706; border-radius: 999px;
+  background: #fff7ed; color: #9a3412; font-size: 0.7rem;
+  font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+  vertical-align: middle;
+}
+
 .apps-page-main {
   min-height: calc(100vh - var(--nav-h));
   padding: calc(var(--nav-h) + 72px) 0 100px;
